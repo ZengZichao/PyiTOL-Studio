@@ -1,0 +1,141 @@
+DATASET_ARROWS
+#Arrow datasets are visualized as sets of arrows outside the tree, with an optional backbone line/rectangle behind them
+
+#lines starting with a hash are comments and ignored during parsing
+
+#=================================================================#
+#                    MANDATORY SETTINGS                           #
+#=================================================================#
+#select the separator which is used to delimit the data below (TAB,SPACE or COMMA).This separator must be used throughout this file.
+#SEPARATOR TAB
+#SEPARATOR SPACE
+SEPARATOR COMMA
+
+#label is used in the legend table (can be changed later)
+DATASET_LABEL,label1
+
+#dataset color (can be changed later)
+COLOR,#ff0000
+
+#=================================================================#
+#                    OPTIONAL SETTINGS                            #
+#=================================================================#
+
+#=================================================================#
+#     all other optional settings can be set or changed later     #
+#           in the web interface (under 'Datasets' tab)           #
+#=================================================================#
+
+#dataset scale: you can simply set the values where the scale will be drawn
+#DATASET_SCALE,100,125,150,400,500,800
+#or you can specify value, label, color, width, style and label size factor for each scale line (dash separated, format: VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR))
+#DATASET_SCALE,100-amino acid 100-#0000ff-5-1-1,200-line at aa200-#ff0000-1-0-2,1000-3rd aa line-#00ff00-5-1-1
+
+#Each dataset can have a legend, which is defined using LEGEND_XXX fields below
+#For each row in the legend, there should be one shape, color and label.
+#Optionally, you can define an exact legend position using LEGEND_POSITION_X and LEGEND_POSITION_Y. To use automatic legend positioning, do NOT define these values
+#Optionally, shape scaling can be present (LEGEND_SHAPE_SCALES). For each shape, you can define a scaling factor between 0 and 1.
+#To order legend entries horizontally instead of vertically, set LEGEND_HORIZONTAL to 1
+#Shape should be a number between 1 and 12, or any protein domain shape definition (RE, HH, HV...).
+#1: square
+#2: circle
+#3: star
+#4: right pointing triangle
+#5: left pointing triangle
+#6: checkmark
+#7:	solid line	
+#8:	dashed line	
+#9:	dotted line	
+#10:arrow left	
+#11:arrow right	
+#12:bidirectional arrow 
+
+#LEGEND_TITLE,Dataset legend
+#LEGEND_SCALE,1
+#LEGEND_POSITION_X,100
+#LEGEND_POSITION_Y,100
+#LEGEND_HORIZONTAL,0
+#LEGEND_SHAPES,10,11,12
+#LEGEND_COLORS,#ff0000,#00ff00,#0000ff
+#LEGEND_LABELS,left,right,value3
+#LEGEND_SHAPE_SCALES,1,1,0.5
+
+#maximum width
+#WIDTH,1000
+
+#always show internal values; if set, values associated to internal nodes will be displayed even if these nodes are not collapsed. It could cause overlapping in the dataset display.
+#SHOW_INTERNAL,0
+
+#show dashed lines between leaf labels and the dataset
+#DASHED_LINES,1
+
+#left margin, used to increase/decrease the spacing to the next dataset. Can be negative, causing datasets to overlap.
+#MARGIN,0
+
+#arrow height factor; Default height of each arrow will be slightly less than the available space between leaves, but you can set a multiplication factor here to increase/decrease it (values from 0 to 1 will decrease it, values above 1 will increase it)
+#HEIGHT_FACTOR,1
+
+#external arrows are aligned to the node lines by default. Using BAR_SHIFT, you can move them all up/down by a fixed amount
+#BAR_SHIFT,0
+
+#display or hide the text labels for each arrow
+#SHOW_ARROW_LABELS,1
+
+#set the size factor for the text labels
+#LABEL_SIZE_FACTOR,1
+
+#with LABELS_ON_TOP set to 0, label text which does not fit into the arrow will be hidden
+#LABELS_ON_TOP,0
+
+#Position of the label, relative to the arrow (start and end are relative to the arrow direction)
+#can be one of: start, end or center
+#LABEL_POSITION,start
+
+#shift all labels horizontally and/or vertically
+#LABEL_SHIFT_X,10
+#LABEL_SHIFT_Y,5
+
+#rotate all domain labels by a custom angle
+#LABEL_ROTATION,0
+
+#if set to 1, calculate the domain label color automatically, based on the darkness of the domain. Labels will be white or black.
+#LABEL_AUTO_COLOR,1
+
+#color of the background rectangle backbone displayed behind the arrows
+#BACKBONE_COLOR,#aaaaaa
+
+#height of the background rectangle (in pixels)
+#BACKBONE_HEIGHT,10
+
+#border width; if set above 0, a border of specified width (in pixels) will be drawn around the arrow shapes
+#BORDER_WIDTH,0
+
+#border color; used when BORDER_WIDTH is above 0
+#BORDER_COLOR,#0000ff
+
+#=================================================================#
+#       Actual data follows after the "DATA" keyword              #
+#=================================================================#
+#Internal tree nodes can be specified using IDs directly, or using the 'last common ancestor' method described in iTOL help pages
+
+DATA
+
+#Each node can have one arrow set definition assigned, with the backbone size/width defined in field 2, followed by an unlimited number of arrow definitions
+#Each arrow definition consists of 10 mandatory parts, separated with vertical lines:
+#START|END|COLOR1|COLOR2|LABEL|LABEL_COLOR|ARROW_HEIGHT|BOX_HEIGHT|HEAD_WIDTH_LEFT|HEAD_WIDHT_RIGHT|...followed by any 'mark' defintions
+
+#ARROW_HEIGHT is a factor between 0 and 1 (1 will be the full height available in the tree for a single node)
+#BOX_HEIGHT is a factor between 0 and 1 (percentage of the full arrow height)
+#HEAD_WIDTH_LEFT is the size of the arrow head width on the left side. For inverted arrow heads, use a negative width (and box height 1)
+#HEAD_WIDTH_RIGHT is the size of the arrow head width on the right side. For inverted arrow heads, use a negative width (and box height 1)
+
+#The mandatory 10 arrow defintion parts can be followed by any number of "mark" definitions, which are rendered as vertical bars within the arrow.
+#Each mark defintion consists of 3 parts:
+#START|END|COLOR
+
+
+#9606,1000,100|200|#3333ff|#3333ff|25|#ffffff|1|1|0|0|120|123|#ffffff|140|145|#ffff00,500|800|#ff6666|#ff0000|box2|#0000ff|1|1|50|-50|620|622|#000000
+9606,810,10|120|#3333ff|#3333ff|24|#ffffff|1|1|0|-25|110|115|#ffff00,100|175|#3333ff|#3333ff|25|#ffffff|1|1|25|0|110|115|#ffff00,180|255|#3333ff|#3333ff|26|#ffffff|1|1|0|25,235|315|#3333ff|#ff3333|27|#ffffff|1|1|-25|25,295|370|#ff3333|#ff3333|28|#ffffff|1|1|-25|-25,350|425|#ff3333|#33ff33|29|#ffffff|1|1|25|25,405|480|#33ff33|#33ff33|30|#000000|1|1|-25|25,460|535|#33ff33|#33ff33|31|#000000|1|1|-25|0,550|800|#8CA9FF|#8CA9FF|example 1|#ffffff|0.8|0.5|0|50|600|610|#0000ff|770|800|#0000ff
+10116,810,10|70|#3291B6|#3291B6||#ffffff|1|1|0|50,30|140|#3291B6|#3291B6|    a0|#ffffff|1|1|-50|50|120|123|#ffffff,100|540|#3291B6|#BB8ED0|gene 1|#ffffff|1|1|-50|50|350|353|#00ff00|120|123|#ffffff|140|145|#ff00ff,500|800|#BB8ED0|#F1E2E2|gene 2|#000000|1|1|-50|50|600|602|#334455|700|732|#BADFDB|716|717|#000000
+9031,810,20|75|#06D001|#F3FF90|    start|#000000|1|0.8|25|0,100|200|#6A0066|#934790|right|#ffffff|1|0.5|0|25,200|350|#FF6F3C|#FF6F3C||#347433|0.5|0.5|25|25,375|475|#626F47|#A4B465|left|#ffffff|1|0.5|25|0,500|535|#DDF6D2|#DDF6D2||#000000|1|0.75|0|25,600|700|#000|#7C00FE||#000000|0.3|0.5|20|20,750|800|#B0DB9C|#B0DB9C||#000000|1|0.15|0|10
+

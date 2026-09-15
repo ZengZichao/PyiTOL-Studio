@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyiTOL Studio — 主窗口视觉稿 v1.0</title>
+<style>
+  :root{
+    --accent:#1f8a5d; --accent-soft:rgba(31,138,93,.12); --accent-ring:rgba(31,138,93,.35);
+    --bg:#ffffff; --panel:#f7f7f8; --sidebar:#f2f2f4; --chrome:#ececef;
+    --text:#1d1d1f; --text-sec:#86868b; --border:rgba(0,0,0,.09); --border-strong:rgba(0,0,0,.14);
+    --row-alt:#fafafa; --hover:rgba(0,0,0,.045);
+    --btn-sec:#ffffff; --input-bg:#ffffff;
+    --mono:"SF Mono",ui-monospace,Menlo,monospace;
+    --dot-control:#7da7d9; --dot-heat:#e4674b; --dot-cold:#5b8fd4; --dot-salt:#9b72c9;
+  }
+  .dark{
+    --accent:#3ecf8e; --accent-soft:rgba(62,207,142,.15); --accent-ring:rgba(62,207,142,.35);
+    --bg:#1e1e20; --panel:#252527; --sidebar:#222224; --chrome:#2a2a2c;
+    --text:#f5f5f7; --text-sec:#98989d; --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.18);
+    --row-alt:#232325; --hover:rgba(255,255,255,.05);
+    --btn-sec:#3a3a3c; --input-bg:#2b2b2d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;
+    background:linear-gradient(160deg,#d8d8dc,#b9bec6);
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    padding:28px 20px 40px;color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ====== 视觉稿控制器（非软件本体） ====== */
+  .controller{
+    display:flex;gap:8px;align-items:center;margin-bottom:18px;
+    background:rgba(255,255,255,.75);backdrop-filter:blur(8px);
+    border:1px solid rgba(0,0,0,.1);border-radius:99px;padding:6px 8px;
+    font-size:12px;color:#555;
+  }
+  .dark-controller-fix{color:#333}
+  .controller button{
+    border:none;border-radius:99px;padding:5px 14px;cursor:pointer;
+    font-size:12px;font-family:inherit;background:transparent;color:#555;
+  }
+  .controller button.active{background:#1d1d1f;color:#fff}
+  .controller .theme-btn{display:flex;align-items:center;gap:5px}
+  .controller svg{width:13px;height:13px}
+
+  /* ====== 应用窗口 ====== */
+  .window{
+    width:min(1240px,100%);height:760px;
+    background:var(--bg);border-radius:12px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.35),0 0 0 .5px rgba(0,0,0,.15);
+    display:flex;flex-direction:column;
+  }
+  .window.hidden{display:none}
+
+  /* 工具栏 */
+  .toolbar{
+    height:52px;flex:none;display:flex;align-items:center;gap:6px;
+    padding:0 16px;background:var(--chrome);
+    border-bottom:1px solid var(--border);
+  }
+  .traffic{display:flex;gap:8px;margin-right:18px}
+  .traffic i{width:12px;height:12px;border-radius:50%}
+  .traffic i:nth-child(1){background:#ff5f57}.traffic i:nth-child(2){background:#febc2e}.traffic i:nth-child(3){background:#28c840}
+  .toolbar .title{
+    position:absolute;left:50%;transform:translateX(-50%);
+    font-size:13px;font-weight:600;color:var(--text-sec);
+  }
+  .toolbar{position:relative}
+  .tb-btn{
+    display:flex;align-items:center;gap:6px;
+    border:none;background:transparent;color:var(--text);
+    font-size:13px;font-family:inherit;padding:6px 10px;border-radius:7px;cursor:pointer;
+  }
+  .tb-btn:hover{background:var(--hover)}
+  .tb-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tb-spacer{flex:1}
+  .btn-primary{
+    display:flex;align-items:center;gap:7px;
+    background:var(--accent);color:#fff;border:none;border-radius:7px;
+    padding:7px 14px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;
+  }
+  .btn-primary svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .btn-secondary{
+    display:flex;align-items:center;gap:7px;
+    background:var(--btn-sec);color:var(--text);border:1px solid var(--border-strong);
+    border-radius:7px;padding:7px 14px;font-size:13px;font-family:inherit;cursor:pointer;
+  }
+  .btn-secondary svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* 三栏主体 */
+  .main{flex:1;display:flex;min-height:0}
+
+  /* 左侧栏 */
+  .sidebar{
+    width:224px;flex:none;background:var(--sidebar);
+    border-right:1px solid var(--border);
+    padding:14px 10px;display:flex;flex-direction:column;gap:2px;
+  }
+  .side-label{font-size:11px;font-weight:600;color:var(--text-sec);padding:8px 10px 4px;letter-spacing:.3px}
+  .side-item{
+    display:flex;align-items:center;gap:8px;
+    padding:6px 10px;border-radius:7px;font-size:13px;cursor:pointer;color:var(--text);
+  }
+  .side-item:hover{background:var(--hover)}
+  .side-item.active{background:var(--accent-soft);color:var(--accent);font-weight:500}
+  .side-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .side-item .meta{margin-left:auto;font-size:11px;color:var(--text-sec)}
+  .side-item .chev{margin-left:auto}
+  .side-add{
+    margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;
+    border:1.5px dashed var(--border-strong);border-radius:8px;padding:7px;
+    font-size:12px;color:var(--text-sec);cursor:pointer;background:transparent;font-family:inherit;
+  }
+  .side-add svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+  /* 中央区 */
+  .center{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+  .center-tabs{
+    flex:none;display:flex;align-items:center;gap:14px;
+    padding:10px 18px;border-bottom:1px solid var(--border);
+  }
+  .seg{
+    display:flex;background:var(--panel);border-radius:7px;padding:2px;
+  }
+  .seg button{
+    border:none;background:transparent;font-family:inherit;font-size:12px;
+    padding:4px 16px;border-radius:5px;cursor:pointer;color:var(--text-sec);
+  }
+  .seg button.active{background:var(--bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.15);font-weight:500}
+  .center-tabs .hint{font-size:12px;color:var(--text-sec)}
+
+  /* 数据表格 */
+  .table-wrap{flex:1.35;overflow:auto;min-height:0}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{
+    position:sticky;top:0;background:var(--panel);
+    text-align:left;font-weight:500;font-size:12px;color:var(--text-sec);
+    padding:8px 18px;border-bottom:1px solid var(--border);
+  }
+  tbody td{padding:7.5px 18px;border-bottom:1px solid var(--border)}
+  tbody tr:nth-child(even){background:var(--row-alt)}
+  tbody tr:hover{background:var(--hover)}
+  td.id{font-family:var(--mono);font-size:12.5px}
+  .cat{display:inline-flex;align-items:center;gap:7px}
+  .cat i{width:8px;height:8px;border-radius:50%;flex:none}
+  .dot-control{background:var(--dot-control)}.dot-heat{background:var(--dot-heat)}
+  .dot-cold{background:var(--dot-cold)}.dot-salt{background:var(--dot-salt)}
+  .badge-ok{
+    display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--accent);
+  }
+  .badge-ok svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* 模板预览 */
+  .preview{
+    flex:1;min-height:0;display:flex;flex-direction:column;
+    border-top:1px solid var(--border);
+  }
+  .preview-head{
+    flex:none;display:flex;align-items:center;justify-content:space-between;
+    padding:8px 18px;background:var(--panel);border-bottom:1px solid var(--border);
+  }
+  .preview-head .fname{font-family:var(--mono);font-size:12px;color:var(--text)}
+  .preview-head .actions{display:flex;gap:10px}
+  .preview-head .actions button{
+    border:none;background:transparent;font-size:12px;color:var(--accent);
+    cursor:pointer;font-family:inherit;padding:2px 4px;border-radius:4px;
+  }
+  .preview-head .actions button:hover{background:var(--accent-soft)}
+  pre.code{
+    flex:1;overflow:auto;margin:0;padding:14px 18px;
+    font-family:var(--mono);font-size:12px;line-height:1.75;
+    color:var(--text);background:var(--bg);white-space:pre;
+  }
+  .t-head{color:var(--accent);font-weight:700}
+  .t-kw{color:#b26a00;font-weight:600}
+  .dark .t-kw{color:#f5a623}
+  .t-key{color:#3a6ea5}
+  .dark .t-key{color:#7fb2ef}
+  .t-com{color:var(--text-sec);font-style:italic}
+  .t-str{font-family:inherit}
+
+  /* 右侧检查器 */
+  .inspector{
+    width:268px;flex:none;background:var(--panel);
+    border-left:1px solid var(--border);
+    padding:16px 16px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;
+  }
+  .insp-title{font-size:12px;font-weight:600;color:var(--text-sec);letter-spacing:.3px}
+  .field label{display:block;font-size:12px;color:var(--text-sec);margin-bottom:5px}
+  .field input[type=text]{
+    width:100%;background:var(--input-bg);border:1px solid var(--border-strong);
+    border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--text);
+  }
+  .field input[type=text]:focus{outline:2px solid var(--accent-ring);outline-offset:0;border-color:transparent}
+  .field .note{font-size:11px;color:var(--text-sec);margin-top:4px}
+  .field-row{display:flex;gap:10px}
+  .field-row .field{flex:1}
+  .color-chip{display:flex;align-items:center;gap:8px}
+  .color-chip i{width:26px;height:26px;border-radius:7px;background:#ff0000;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .color-chip input{flex:1}
+  .segmented-mini{display:flex;background:var(--input-bg);border:1px solid var(--border-strong);border-radius:7px;overflow:hidden}
+  .segmented-mini button{
+    flex:1;border:none;background:transparent;padding:6px 0;font-size:12px;
+    font-family:inherit;color:var(--text-sec);cursor:pointer;
+  }
+  .segmented-mini button.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .preset{
+    display:flex;align-items:center;gap:10px;padding:9px 11px;
+    border:1px solid var(--border-strong);border-radius:9px;cursor:pointer;
+    background:var(--input-bg);margin-bottom:7px;
+  }
+  .preset.active{border-color:var(--accent);background:var(--accent-soft)}
+  .preset .swatches{display:flex;gap:3px}
+  .preset .swatches i{width:9px;height:9px;border-radius:50%}
+  .preset .name{font-size:12.5px;font-weight:500}
+  .preset .radio{
+    margin-left:auto;width:15px;height:15px;border-radius:50%;
+    border:1.5px solid var(--border-strong);flex:none;position:relative;
+  }
+  .preset.active .radio{border-color:var(--accent)}
+  .preset.active .radio::after{
+    content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent);
+  }
+  .valid-banner{
+    display:flex;align-items:center;gap:7px;
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:8px;padding:8px 11px;font-size:12px;font-weight:500;
+  }
+  .valid-banner svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .inspector .btn-primary{justify-content:center}
+
+  /* ====== 欢迎页（空状态） ====== */
+  .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:var(--bg);padding:40px}
+  .logo{width:76px;height:76px;border-radius:19px;background:linear-gradient(150deg,#2ea36f,#166a48);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(31,138,93,.35)}
+  .logo svg{width:42px;height:42px;stroke:#fff;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .welcome h1{font-size:26px;font-weight:700;margin-top:18px;letter-spacing:-.3px}
+  .welcome .tagline{font-size:13.5px;color:var(--text-sec);margin-top:6px}
+  .cards{display:flex;gap:14px;margin-top:34px}
+  .card{
+    width:190px;padding:20px 18px;border:1px solid var(--border-strong);border-radius:14px;
+    background:var(--panel);cursor:pointer;transition:all .15s ease;text-align:left;
+  }
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+  .card .ic{
+    width:34px;height:34px;border-radius:9px;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;margin-bottom:12px;
+  }
+  .card .ic svg{width:17px;height:17px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .card .name{font-size:13.5px;font-weight:600}
+  .card .desc{font-size:11.5px;color:var(--text-sec);margin-top:4px;line-height:1.5}
+  .recent{margin-top:36px;width:598px;max-width:100%}
+  .recent .r-label{font-size:11px;font-weight:600;color:var(--text-sec);margin-bottom:8px;letter-spacing:.3px}
+  .recent .r-item{
+    display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;
+    font-size:13px;cursor:pointer;
+  }
+  .recent .r-item:hover{background:var(--hover)}
+  .recent .r-item svg{width:14px;height:14px;stroke:var(--text-sec);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .recent .r-item .when{margin-left:auto;font-size:11.5px;color:var(--text-sec)}
+  .drag-hint{
+    margin-top:30px;font-size:12px;color:var(--text-sec);
+    border:1.5px dashed var(--border-strong);border-radius:10px;padding:10px 22px;
+  }
+</style>
+</head>
+<body>
+
+<!-- 视觉稿控制器（不属于软件本体） -->
+<div class="controller dark-controller-fix">
+  <span>视觉稿视图：</span>
+  <button id="tab-work" class="active" onclick="switchView('work')">主工作台</button>
+  <button id="tab-welcome" onclick="switchView('welcome')">欢迎页（空状态）</button>
+  <span style="opacity:.4">|</span>
+  <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    深色模式
+  </button>
+</div>
+
+<!-- ============ 主工作台 ============ -->
+<div class="window" id="view-work">
+  <div class="toolbar">
+    <div class="traffic"><i></i><i></i><i></i></div>
+    <button class="tb-btn"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>新建</button>
+    <button class="tb-btn"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>打开</button>
+    <button class="tb-btn"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>导入模板</button>
+    <span class="title">GTDB 热图分析 — PyiTOL Studio</span>
+    <div class="tb-spacer"></div>
+    <button class="btn-primary"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>上传 iTOL</button>
+    <button class="btn-secondary">导出<svg viewBox="0 0 24 24" style="width:12px;height:12px"><path d="m6 9 6 6 6-6"/></svg></button>
+  </div>
+
+  <div class="main">
+    <!-- 左：项目导航 -->
+    <div class="sidebar">
+      <div class="side-label">树</div>
+      <div class="side-item">
+        <svg viewBox="0 0 24 24"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
+        genome.tree
+        <span class="meta">1,204 叶</span>
+      </div>
+      <div class="side-label" style="margin-top:6px">注释单元</div>
+      <div class="side-item active">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="6" rx="2"/><path d="M7 6h.01M11 6h.01"/></svg>
+        色条 · color_strip1
+      </div>
+      <div class="side-item">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        热图 · heatmap60
+        <span class="chev">60 列</span>
+      </div>
+      <div class="side-item">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="6" rx="2"/><path d="M7 6h.01M11 6h.01"/></svg>
+        色条 · color_strip2
+      </div>
+      <div class="side-item">
+        <svg viewBox="0 0 24 24"><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2z"/></svg>
+        符号 · symbols1
+      </div>
+      <button class="side-add"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>添加注释单元</button>
+    </div>
+
+    <!-- 中：数据 + 预览 -->
+    <div class="center">
+      <div class="center-tabs">
+        <div class="seg">
+          <button class="active">数据</button>
+          <button>参数</button>
+        </div>
+        <span class="hint">treatment_table.tsv · 8 行 × 3 列 · 首列已识别为树 ID</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width:32%">id</th><th style="width:34%">treatment</th><th>replicate</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="id">TaxonA</td><td><span class="cat"><i class="dot-control"></i>control</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+            <tr><td class="id">TaxonB</td><td><span class="cat"><i class="dot-heat"></i>heat</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+            <tr><td class="id">TaxonC</td><td><span class="cat"><i class="dot-cold"></i>cold</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+            <tr><td class="id">TaxonD</td><td><span class="cat"><i class="dot-heat"></i>heat</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+            <tr><td class="id">TaxonE</td><td><span class="cat"><i class="dot-control"></i>control</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+            <tr><td class="id">TaxonF</td><td><span class="cat"><i class="dot-salt"></i>salt</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+            <tr><td class="id">TaxonG</td><td><span class="cat"><i class="dot-heat"></i>heat</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+            <tr><td class="id">TaxonH</td><td><span class="cat"><i class="dot-control"></i>control</span></td><td><span class="badge-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>已匹配</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="preview">
+        <div class="preview-head">
+          <span class="fname">color_strip1.txt — 模板预览</span>
+          <span class="actions"><button>复制</button><button>导出…</button></span>
+        </div>
+<pre class="code"><span class="t-head">DATASET_COLORSTRIP</span>
+<span class="t-com"># lines starting with a hash are comments</span>
+<span class="t-com">#SEPARATOR COMMA</span>
+<span class="t-kw">SEPARATOR</span> SPACE
+<span class="t-key">DATASET_LABEL</span> color_strip1
+<span class="t-key">COLOR</span> <span class="t-str" style="color:#e41a1c">#ff0000</span>
+<span class="t-key">STRIP_WIDTH</span> 25
+<span class="t-key">MARGIN</span> 0
+<span class="t-key">BORDER_WIDTH</span> 1
+<span class="t-key">BORDER_COLOR</span> <span class="t-str" style="color:#1d1d1f">#000</span>
+<span class="t-key">SHOW_INTERNAL</span> 0
+
+<span class="t-kw">DATA</span>
+TaxonA control <span class="t-str" style="color:#7da7d9">#7da7d9</span>
+TaxonB heat    <span class="t-str" style="color:#e4674b">#e4674b</span>
+TaxonC cold    <span class="t-str" style="color:#5b8fd4">#5b8fd4</span>
+TaxonD heat    <span class="t-str" style="color:#e4674b">#e4674b</span>
+TaxonE control <span class="t-str" style="color:#7da7d9">#7da7d9</span></pre>
+      </div>
+    </div>
+
+    <!-- 右：参数检查器 -->
+    <div class="inspector">
+      <div class="insp-title">参数 · DATASET_COLORSTRIP</div>
+
+      <div class="field">
+        <label>数据集标签 DATASET_LABEL</label>
+        <input type="text" value="color_strip1">
+      </div>
+
+      <div class="field">
+        <label>数据集颜色 COLOR</label>
+        <div class="color-chip"><i></i><input type="text" value="#ff0000"></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>条带宽度 STRIP_WIDTH</label>
+          <input type="text" value="25">
+          <div class="note">像素，范围 1–100</div>
+        </div>
+        <div class="field">
+          <label>边框 BORDER_WIDTH</label>
+          <input type="text" value="1">
+          <div class="note">0 为无边框</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>分隔格式 SEPARATOR</label>
+        <div class="segmented-mini">
+          <button>TAB</button>
+          <button class="active">SPACE</button>
+          <button>COMMA</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>配色预设</label>
+        <div class="preset active">
+          <div class="swatches"><i style="background:#e41a1c"></i><i style="background:#377eb8"></i><i style="background:#4daf4a"></i></div>
+          <span class="name">nature</span><span class="radio"></span>
+        </div>
+        <div class="preset">
+          <div class="swatches"><i style="background:#0072b2"></i><i style="background:#e69f00"></i><i style="background:#009e73"></i></div>
+          <span class="name">色盲友好 colorblind</span><span class="radio"></span>
+        </div>
+        <div class="preset">
+          <div class="swatches"><i style="background:#333333"></i><i style="background:#888888"></i><i style="background:#cccccc"></i></div>
+          <span class="name">cell</span><span class="radio"></span>
+        </div>
+      </div>
+
+      <div class="valid-banner">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+        全部参数有效 · 8/8 ID 与树匹配
+      </div>
+
+      <button class="btn-primary">生成模板</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 欢迎页（空状态） ============ -->
+<div class="window hidden" id="view-welcome">
+  <div class="toolbar">
+    <div class="traffic"><i></i><i></i><i></i></div>
+    <span class="title">PyiTOL Studio</span>
+    <div class="tb-spacer"></div>
+  </div>
+  <div class="welcome">
+    <div class="logo">
+      <svg viewBox="0 0 24 24"><path d="M12 22V11"/><path d="M12 15H6.5"/><path d="M6.5 15v-4"/><path d="M6.5 13H9"/><path d="M12 11h5.5"/><path d="M17.5 11V6"/><path d="M17.5 8.5H15"/><path d="M9 7l3 4 3-4"/></svg>
+    </div>
+    <h1>PyiTOL Studio</h1>
+    <div class="tagline">Desktop companion for iTOL annotation · 为 iTOL 注释而生的桌面工作台</div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg></div>
+        <div class="name">新建工程</div>
+        <div class="desc">导入 Newick 树与数据表，从零生成注释模板</div>
+      </div>
+      <div class="card">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></div>
+        <div class="name">打开工程</div>
+        <div class="desc">继续编辑 .pyitolproj 工程，恢复全部注释单元</div>
+      </div>
+      <div class="card">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg></div>
+        <div class="name">浏览示例</div>
+        <div class="desc">载入 iTOL 官方模板示例，快速了解各类注释</div>
+      </div>
+    </div>
+
+    <div class="recent">
+      <div class="r-label">最近工程</div>
+      <div class="r-item">
+        <svg viewBox="0 0 24 24"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
+        GTDB 热图分析<span class="when">昨天</span>
+      </div>
+      <div class="r-item">
+        <svg viewBox="0 0 24 24"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
+        16S 色条注释<span class="when">9 月 8 日</span>
+      </div>
+    </div>
+
+    <div class="drag-hint">将 Newick 树文件或 iTOL 模板文件拖入窗口即可开始</div>
+  </div>
+</div>
+
+<script>
+  function switchView(v){
+    document.getElementById('view-work').classList.toggle('hidden', v!=='work');
+    document.getElementById('view-welcome').classList.toggle('hidden', v!=='welcome');
+    document.getElementById('tab-work').classList.toggle('active', v==='work');
+    document.getElementById('tab-welcome').classList.toggle('active', v==='welcome');
+  }
+  function toggleTheme(){
+    document.documentElement.classList.toggle('dark');
+  }
+</script>
+</body>
+</html>

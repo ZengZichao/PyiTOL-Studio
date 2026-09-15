@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use PyiTOL Studio, please also cite the PyiTOL engine it is built on."
+title: "PyiTOL Studio"
+version: 0.1.0
+date-released: "2026-09-15"
+authors:
+  - family-names: "Zeng"
+    given-names: "Zichao"
+repository-code: "https://github.com/ZengZichao/PyiTOL-Studio"
+license: MIT
+references:
+  - type: software
+    title: "PyiTOL: reproducible Python workflows for iTOL annotation and taxonomic monophyly assessment"
+    repository-code: "https://github.com/ZengZichao/PyiTOL"
+    doi: "10.64898/2026.08.27.747471"
+    authors:
+      - family-names: "Zeng"
+        given-names: "Zichao"

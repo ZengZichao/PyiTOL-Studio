@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.pyitolproj.tmp
+.DS_Store
+
+# 本地构建 / 打包中间产物与签名产物
+*.dmg
+*.pkg
+*.app/
+.entitlements.local
+
+# 本地开发工具目录 / editor & tooling artifacts
+.mimosa/
+.idea/
+.vscode/
+*.swp
+
+# 安全：绝不提交密钥与环境文件
+.env
+*.key
+.itolapi.key
+
+# QwenWork 备份 / 临时区
+_backup/
+.trash/

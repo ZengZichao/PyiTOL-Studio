@@ -1,0 +1,46 @@
+name: "Bug report / 问题反馈"
+description: "报告一个可复现的问题 / Report something that doesn't work as expected"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量提供可复现的步骤。请勿粘贴 iTOL API Key。
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 发生了什么 / What happened?
+      description: 清晰描述问题现象，有截图更好。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤 / Steps to reproduce
+      placeholder: |
+        1. 打开工程 …
+        2. 点击 …
+        3. 看到 …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果 / Expected behaviour
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 应用版本 / App version
+      placeholder: "例如 0.1.0（见「关于」/ About）"
+  - type: input
+    id: os
+    attributes:
+      label: 系统与环境 / OS & environment
+      placeholder: "macOS 15 (arm64)，语言：中文 / English"
+  - type: textarea
+    id: files
+    attributes:
+      label: 相关样例（可选）/ Sample files (optional)
+      description: 可上传去除敏感数据后的 .pyitolproj 或模板文件；不要包含 API Key。

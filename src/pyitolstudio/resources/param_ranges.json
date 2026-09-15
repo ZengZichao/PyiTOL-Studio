@@ -1,0 +1,279 @@
+{
+  "_meta": {
+    "name": "pyitol-studio parameter catalog",
+    "provenance": "Parameter keys bootstrapped from the 44 official iTOL v7 templates (PyiTOL-参考文件/iTOL-v7-模板文件) via pyitol learner; ranges/defaults curated per iTOL help page. scripts/rda_to_json.py can regenerate raw ranges from itol.toolkit data/*.rda.",
+    "note": "Fields missing here fall back to generic text editing (development plan R7). Lists are space-separated single-line values, matching iTOL template syntax.",
+    "version": 1
+  },
+  "fields": {
+    "DATASET_LABEL": {"label": "数据集标签", "widget": "text", "default": "", "help": "显示在树旁的数据集名称"},
+    "COLOR": {"label": "颜色", "widget": "color", "default": "#dd4477", "help": "数据集主颜色（#hex）"},
+    "COLOR_MAX": {"label": "最大值颜色", "widget": "color", "default": "#dc143c", "help": "数值上限颜色"},
+    "COLOR_MID": {"label": "中间值颜色", "widget": "color", "default": "#f5f5f5", "help": "数值中位颜色（需启用 USE_MID_COLOR）"},
+    "COLOR_MIN": {"label": "最小值颜色", "widget": "color", "default": "#3b5b92", "help": "数值下限颜色"},
+    "USE_MID_COLOR": {"label": "使用中间色", "widget": "bool", "default": 0, "help": "0/1：三色渐变"},
+    "STRIP_WIDTH": {"label": "条带宽度 (px)", "widget": "int", "min": 1, "max": 100, "default": 25, "help": "条带/热图宽度，像素 1–100"},
+    "MARGIN": {"label": "边距 (px)", "widget": "int", "min": 0, "max": 100, "default": 0, "help": "与相邻数据集的间距"},
+    "BORDER_WIDTH": {"label": "边框宽度", "widget": "int", "min": 0, "max": 10, "default": 1, "help": "0 表示无边框"},
+    "BORDER_COLOR": {"label": "边框颜色", "widget": "color", "default": "#000000", "help": "#hex"},
+    "SHOW_INTERNAL": {"label": "显示内部节点", "widget": "bool", "default": 0, "help": "0/1"},
+    "COLOR_BRANCHES": {"label": "着色对象", "widget": "choice", "choices": ["0", "1"], "default": "0", "choice_labels": ["叶片", "分支"], "help": "0=叶片着色，1=分支着色"},
+    "HEIGHT_FACTOR": {"label": "高度系数", "widget": "float", "min": 0.1, "max": 10, "default": 1, "help": "相对高度倍率"},
+    "WIDTH": {"label": "宽度 (px)", "widget": "int", "min": 10, "max": 1000, "default": 200, "help": "图区宽度"},
+    "SIZE_FACTOR": {"label": "尺寸系数", "widget": "float", "min": 0.1, "max": 10, "default": 1, "help": "相对尺寸倍率"},
+    "MAXIMUM_SIZE": {"label": "最大尺寸", "widget": "float", "min": 0, "default": 30, "help": "符号/饼图最大尺寸"},
+    "MAXIMUM_SYMBOL_SIZE": {"label": "最大符号尺寸", "widget": "float", "min": 0, "default": 35, "help": "外部符号最大尺寸，像素（iTOL v7 模板默认 35）"},
+    "FIELD_COLORS": {"label": "字段颜色", "widget": "color_list", "default": "", "help": "空格分隔的 #hex 列表，与数据列一一对应"},
+    "FIELD_LABELS": {"label": "字段标签", "widget": "text_list", "default": "", "help": "空格分隔，与数据列一一对应"},
+    "FIELD_SHAPES": {"label": "字段形状", "widget": "text_list", "default": "", "help": "空格分隔的形状名（如 circle square）"},
+    "SYMBOL_SPACING": {"label": "符号间距", "widget": "float", "min": 0, "default": 1, "help": "相邻符号间距系数"},
+    "BAR_SHIFT": {"label": "条形偏移", "widget": "int", "min": -100, "max": 100, "default": 0, "help": "整体水平偏移"},
+    "BAR_ZERO": {"label": "零点位置", "widget": "float", "default": 0, "help": "条形图零基线值"},
+    "ALIGN_FIELDS": {"label": "字段对齐", "widget": "bool", "default": 0, "help": "0/1：多柱共基线"},
+    "DATASET_SCALE": {"label": "数值刻度", "widget": "text_list", "default": "", "help": "刻度文本列表，留空自动"},
+    "SHOW_TREE": {"label": "显示列树", "widget": "bool", "default": 0, "help": "0/1：热图列聚类树"},
+    "FIELD_TREE": {"label": "列树 Newick", "widget": "text", "default": "", "help": "列结构 Newick 字符串"},
+    "TREE_HEIGHT": {"label": "列树高度", "widget": "int", "min": 0, "max": 500, "default": 50, "help": "像素"},
+    "ALIGN_TO_TREE": {"label": "对齐树", "widget": "bool", "default": 0, "help": "0/1"},
+    "LABEL_ROTATION": {"label": "标签旋转", "widget": "int", "min": -90, "max": 90, "default": 0, "help": "角度"},
+    "SHAPE_TYPE": {"label": "形状类型", "widget": "text", "default": "circle", "help": "外部形状类型"},
+    "COLOR_FILL": {"label": "填充颜色", "widget": "color", "default": "#90d070", "help": "#hex"},
+    "TRANSPARENT_FILL": {"label": "透明填充", "widget": "bool", "default": 0, "help": "0/1"},
+    "HORIZONTAL_GRID": {"label": "水平网格", "widget": "bool", "default": 0, "help": "0/1"},
+    "VERTICAL_GRID": {"label": "垂直网格", "widget": "bool", "default": 0, "help": "0/1"},
+    "SHOW_VALUES": {"label": "显示数值", "widget": "bool", "default": 0, "help": "0/1"},
+    "SHAPE_SPACING": {"label": "形状间距", "widget": "float", "min": 0, "default": 1, "help": "相邻形状间距"},
+    "DRAW_ARROWS": {"label": "绘制箭头", "widget": "bool", "default": 0, "help": "0/1：连接线箭头"},
+    "ARROW_SIZE": {"label": "箭头尺寸", "widget": "float", "min": 0, "default": 5, "help": "像素"},
+    "CENTER_CURVES": {"label": "曲线居中", "widget": "bool", "default": 0, "help": "0/1：贝塞尔曲线"},
+    "CURVE_ANGLE": {"label": "曲线角度", "widget": "float", "min": 0, "max": 180, "default": 45, "help": "连接曲线转角"},
+    "MAXIMUM_LINE_WIDTH": {"label": "最大线宽", "widget": "float", "min": 0, "default": 10, "help": "按数据宽度归一化的上限"},
+    "BACKBONE_COLOR": {"label": "骨架颜色", "widget": "color", "default": "#64747c", "help": "蛋白域骨架色"},
+    "SHOW_DOMAIN_LABELS": {"label": "显示域标签", "widget": "bool", "default": 0, "help": "0/1"},
+    "LABELS_ON_TOP": {"label": "标签置顶", "widget": "bool", "default": 0, "help": "0/1"},
+    "DEFAULT_LINE_COLOR": {"label": "默认折线色", "widget": "color", "default": "#2c7bb6", "help": "#hex"},
+    "DEFAULT_DOT_COLOR": {"label": "默认圆点色", "widget": "color", "default": "#abd9e9", "help": "#hex"},
+    "DEFAULT_CONNECTION_COLOR": {"label": "默认连接颜色", "widget": "color", "default": "#aabbcc", "help": "数据集默认连接线颜色（#hex / RGB / RGBA；iTOL v7 模板默认 #aabbcc）"},
+    "DOT_SIZE": {"label": "圆点尺寸", "widget": "float", "min": 0, "default": 3, "help": "像素"},
+    "LINE_WIDTH": {"label": "线宽", "widget": "float", "min": 0, "default": 2, "help": "像素"},
+    "SHOW_DOTS": {"label": "显示圆点", "widget": "bool", "default": 1, "help": "0/1"},
+    "SHOW_LINE": {"label": "显示折线", "widget": "bool", "default": 1, "help": "0/1"},
+    "VERTICAL_CHART": {"label": "垂直图", "widget": "bool", "default": 0, "help": "0/1"},
+    "CHART_SHIFT": {"label": "图表偏移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "整体水平偏移"},
+    "AXIS_X": {"label": "X 轴定义", "widget": "text_list", "default": "", "help": "min step max 或刻度列表"},
+    "AXIS_Y": {"label": "Y 轴定义", "widget": "text_list", "default": "", "help": "刻度列表"},
+    "LINE_COLORS": {"label": "折线颜色", "widget": "color_list", "default": "", "help": "空格分隔 #hex"},
+    "HIGHLIGHT_TYPE": {"label": "高亮类型", "widget": "text", "default": "box", "help": "如 box"},
+    "HIGHLIGHT_REFERENCES": {"label": "高亮参考序列", "widget": "text_list", "default": "", "help": "参考序列编号列表"},
+    "MARK_REFERENCES": {"label": "标记参考序列", "widget": "bool", "default": 0, "help": "0/1"},
+    "REFERENCE_BOX_BORDER_COLOR": {"label": "参考框边色", "widget": "color", "default": "#000000", "help": "#hex"},
+    "REFERENCE_BOX_BORDER_WIDTH": {"label": "参考框边宽", "widget": "float", "min": 0, "default": 1, "help": "像素"},
+    "REFERENCE_BOX_FILL_COLOR": {"label": "参考框填充", "widget": "color", "default": "#eeeeee", "help": "#hex"},
+    "CUSTOM_COLOR_SCHEME": {"label": "自定义配色", "widget": "text_list", "default": "", "help": "比对列配色方案"},
+    "IMAGE_ROTATION": {"label": "图片旋转", "widget": "int", "min": -180, "max": 180, "default": 0, "help": "角度"},
+    "IMAGE_SHIFT_H": {"label": "水平位移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "IMAGE_SHIFT_V": {"label": "垂直位移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "LABEL_POSITION": {"label": "标签位置", "widget": "text", "default": "bottom", "help": "如 top/middle/bottom"},
+    "LABEL_ROTATION_X": {"label": "标签旋转", "widget": "int", "min": -90, "max": 90, "default": 0, "help": "角度"},
+    "SHOW_LABELS": {"label": "显示标签", "widget": "bool", "default": 1, "help": "0/1"},
+    "SHOW_COLUMN_LABELS": {"label": "显示列标签", "widget": "bool", "default": 1, "help": "0/1：显示矩阵列的标签行"},
+    "LABELS_VERTICAL": {"label": "标签竖排", "widget": "bool", "default": 0, "help": "0/1"},
+    "FIT_LABELS": {"label": "标签适配", "widget": "bool", "default": 0, "help": "0/1"},
+    "STRAIGHT_LABELS": {"label": "标签拉直", "widget": "bool", "default": 0, "help": "0/1"},
+    "LABEL_OUTLINE_COLOR": {"label": "标签描边色", "widget": "color", "default": "#ffffff", "help": "#hex"},
+    "LABEL_OUTLINE_WIDTH": {"label": "标签描边宽", "widget": "float", "min": 0, "default": 0, "help": "像素"},
+    "LABEL_SHIFT_X": {"label": "标签水平偏移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "LABEL_SHIFT_Y": {"label": "标签垂直偏移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "LABEL_SIZE_FACTOR": {"label": "标签尺寸系数", "widget": "float", "min": 0.1, "max": 10, "default": 1, "help": "相对字号"},
+    "RANGE_TYPE": {"label": "范围类型", "widget": "text", "default": "box", "help": "box/brace/…"},
+    "RANGE_COVER": {"label": "范围覆盖", "widget": "text", "default": "datasets", "help": "覆盖层级"},
+    "COVER_DATASETS": {"label": "覆盖数据集", "widget": "bool", "default": 0, "help": "0/1"},
+    "COVER_LABELS": {"label": "覆盖标签", "widget": "bool", "default": 0, "help": "0/1"},
+    "BRACKET_STYLE": {"label": "括号样式", "widget": "text", "default": "box", "help": "box/bracket"},
+    "BRACKET_SIZE": {"label": "括号尺寸", "widget": "float", "min": 0, "default": 20, "help": "像素"},
+    "BRACKET_SHIFT": {"label": "括号偏移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "BRACKET_BEHIND_DATASETS": {"label": "括号置于数据集后", "widget": "bool", "default": 0, "help": "0/1"},
+    "AUTO_SCALE": {"label": "自动刻度", "widget": "bool", "default": 1, "help": "0/1"},
+    "SCALING_FACTOR": {"label": "缩放系数", "widget": "float", "min": 0.01, "default": 1, "help": "时间轴缩放"},
+    "POSITION_ABOVE": {"label": "置于树上方", "widget": "bool", "default": 0, "help": "0/1"},
+    "SHOW_RANGE_LABELS": {"label": "显示范围标签", "widget": "bool", "default": 1, "help": "0/1"},
+    "SHOW_VALUE_LABELS": {"label": "显示数值标签", "widget": "bool", "default": 0, "help": "0/1"},
+    "RANGE_LABEL_COLOR": {"label": "范围标签色", "widget": "color", "default": "#000000", "help": "#hex"},
+    "RANGE_LABEL_AUTO_COLOR": {"label": "范围标签自动色", "widget": "bool", "default": 0, "help": "0/1"},
+    "RANGE_LABEL_POSITION": {"label": "范围标签位置", "widget": "text", "default": "center", "help": "如 center"},
+    "RANGE_LABEL_ROTATION": {"label": "范围标签旋转", "widget": "int", "min": -90, "max": 90, "default": 0, "help": "角度"},
+    "RANGE_LABEL_SHIFT_X": {"label": "范围标签水平偏移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "RANGE_LABEL_SHIFT_Y": {"label": "范围标签垂直偏移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "RANGE_LABEL_SIZE": {"label": "范围标签尺寸", "widget": "float", "min": 1, "default": 12, "help": "像素"},
+    "VALUE_LABEL_ROTATION": {"label": "数值标签旋转", "widget": "int", "min": -90, "max": 90, "default": 0, "help": "角度"},
+    "VALUE_LABEL_SHIFT": {"label": "数值标签偏移", "widget": "int", "min": -200, "max": 200, "default": 0, "help": "像素"},
+    "VALUE_LABEL_SIZE_FACTOR": {"label": "数值标签尺寸系数", "widget": "float", "min": 0.1, "max": 10, "default": 1, "help": "相对字号"},
+    "STRIP_WIDTH_LEGACY": {"label": "条带宽度", "widget": "int", "min": 1, "max": 100, "default": 25, "help": "像素"}
+  },
+  "legend_fields": {
+    "LEGEND_TITLE": {"label": "图例标题", "widget": "text", "default": "", "help": "图例区标题"},
+    "LEGEND_POSITION_X": {"label": "图例 X (%)", "widget": "int", "min": 0, "max": 100, "default": 85, "help": "0–100，画布百分比"},
+    "LEGEND_POSITION_Y": {"label": "图例 Y (%)", "widget": "int", "min": 0, "max": 100, "default": 15, "help": "0–100，画布百分比"},
+    "LEGEND_HORIZONTAL": {"label": "图例横排", "widget": "bool", "default": 0, "help": "0/1"},
+    "LEGEND_SHAPES": {"label": "图例形状", "widget": "text_list", "default": "", "help": "空格分隔（circle/square/star 等）"},
+    "LEGEND_COLORS": {"label": "图例颜色", "widget": "color_list", "default": "", "help": "空格分隔 #hex"},
+    "LEGEND_LABELS": {"label": "图例文本", "widget": "text_list", "default": "", "help": "空格分隔"},
+    "LEGEND_SHAPE_SCALES": {"label": "图例形状缩放", "widget": "text_list", "default": "", "help": "空格分隔数值"}
+  },
+  "types": {
+    "dataset_colorstrip": {
+      "fields": ["DATASET_LABEL", "COLOR", "STRIP_WIDTH", "COLOR_BRANCHES", "MARGIN", "BORDER_WIDTH", "BORDER_COLOR", "SHOW_INTERNAL"],
+      "data_columns": ["id", "value", "color"],
+      "data_column_labels": ["树 ID", "色带标签", "颜色 #hex（可加 COL 前缀）"]
+    },
+    "dataset_simple_bar": {
+      "fields": ["DATASET_LABEL", "COLOR", "WIDTH", "HEIGHT_FACTOR", "BAR_ZERO", "BAR_SHIFT", "MARGIN", "DATASET_SCALE", "SHOW_INTERNAL"],
+      "data_columns": ["id", "bar_height"],
+      "data_column_labels": ["树 ID", "数值"]
+    },
+    "dataset_multibar": {
+      "fields": ["DATASET_LABEL", "WIDTH", "HEIGHT_FACTOR", "ALIGN_FIELDS", "BAR_SHIFT", "MARGIN", "FIELD_COLORS", "FIELD_LABELS", "DATASET_SCALE", "SHOW_INTERNAL"],
+      "data_columns": ["id", "value_1"],
+      "data_columns_dynamic": "value_N",
+      "data_column_labels": ["树 ID", "数值列 ×N"]
+    },
+    "dataset_heatmap": {
+      "fields": ["DATASET_LABEL", "COLOR_MIN", "COLOR_MID", "COLOR_MAX", "USE_MID_COLOR", "STRIP_WIDTH", "MARGIN", "FIELD_LABELS", "SHOW_TREE", "FIELD_TREE", "TREE_HEIGHT", "SHOW_INTERNAL"],
+      "data_columns": ["id", "value_1"],
+      "data_columns_dynamic": "value_N",
+      "data_column_labels": ["树 ID", "数值列 ×N"]
+    },
+    "dataset_binary": {
+      "fields": ["DATASET_LABEL", "HEIGHT_FACTOR", "SYMBOL_SPACING", "FIELD_SHAPES", "FIELD_COLORS", "FIELD_LABELS", "MARGIN", "SHOW_INTERNAL"],
+      "data_columns": ["id", "field_1"],
+      "data_columns_dynamic": "field_N",
+      "data_column_labels": ["树 ID", "0/1 列 ×N"]
+    },
+    "dataset_tree_colors": {
+      "fields": [],
+      "data_columns": ["id", "type", "color", "style", "size"],
+      "data_column_labels": ["树 ID", "range/branch/clade/label", "颜色 #hex", "样式（normal/dashed 等）", "尺寸（可选）"]
+    },
+    "dataset_labels": {
+      "fields": [],
+      "data_columns": ["id", "label"],
+      "data_column_labels": ["树 ID", "新标签"]
+    },
+    "dataset_gradient": {
+      "fields": ["DATASET_LABEL", "COLOR_MIN", "COLOR_MID", "COLOR_MAX", "USE_MID_COLOR", "STRIP_WIDTH", "MARGIN", "BORDER_WIDTH", "BORDER_COLOR"],
+      "data_columns": ["id", "value", "color"],
+      "data_column_labels": ["树 ID", "数值", "可选色标"]
+    },
+    "dataset_symbols": {
+      "fields": ["DATASET_LABEL", "MAXIMUM_SIZE"],
+      "data_columns": ["id", "type", "value", "color", "label"],
+      "data_column_labels": ["树 ID", "形状", "尺寸", "颜色", "标签（可选）"]
+    },
+    "dataset_piechart": {
+      "fields": ["DATASET_LABEL", "MAXIMUM_SIZE", "HEIGHT_FACTOR", "MARGIN", "FIELD_COLORS", "FIELD_LABELS", "SHOW_INTERNAL"],
+      "data_columns": ["id", "value_1"],
+      "data_columns_dynamic": "value_N",
+      "data_column_labels": ["树 ID", "份额列 ×N"]
+    },
+    "dataset_boxplot": {
+      "fields": ["DATASET_LABEL", "WIDTH", "DATASET_SCALE"],
+      "data_columns": ["id", "value_1"],
+      "data_columns_dynamic": "value_N",
+      "data_column_labels": ["树 ID", "五数列 ×N"]
+    },
+    "dataset_text": {
+      "fields": ["DATASET_LABEL", "SIZE_FACTOR", "LABEL_ROTATION", "ALIGN_TO_TREE", "MARGIN", "SHOW_INTERNAL"],
+      "data_columns": ["id", "text"],
+      "data_column_labels": ["树 ID", "文本"]
+    },
+    "dataset_externalshape": {
+      "fields": ["DATASET_LABEL", "SHAPE_TYPE", "COLOR_FILL", "TRANSPARENT_FILL", "SHAPE_SPACING", "SHOW_VALUES", "HORIZONTAL_GRID", "VERTICAL_GRID"],
+      "data_columns": ["id", "type", "value", "color", "label"],
+      "data_column_labels": ["树 ID", "形状", "尺寸", "颜色", "标签（可选）"]
+    },
+    "dataset_connections": {
+      "fields": ["DATASET_LABEL", "COLOR", "MAXIMUM_LINE_WIDTH", "DRAW_ARROWS", "ARROW_SIZE", "CENTER_CURVES", "CURVE_ANGLE"],
+      "data_columns": ["id1", "id2", "color", "width", "type"],
+      "data_column_labels": ["起点 ID", "终点 ID", "颜色（可选）", "宽度（可选）", "样式（可选）"]
+    },
+    "dataset_domains": {
+      "fields": ["DATASET_LABEL", "BACKBONE_COLOR", "SHOW_DOMAIN_LABELS", "LABELS_ON_TOP", "DATASET_SCALE"],
+      "data_columns": ["id", "from", "to", "type", "label", "color"],
+      "data_column_labels": ["树 ID", "起始", "终止", "形状", "标签", "颜色（可选）"]
+    },
+    "dataset_alignment": {
+      "fields": ["DATASET_LABEL", "SIZE_FACTOR", "HIGHLIGHT_TYPE", "MARK_REFERENCES", "HIGHLIGHT_REFERENCES", "REFERENCE_BOX_FILL_COLOR", "REFERENCE_BOX_BORDER_COLOR", "REFERENCE_BOX_BORDER_WIDTH", "CUSTOM_COLOR_SCHEME", "MARGIN"],
+      "data_columns": ["id", "alignment"],
+      "data_column_labels": ["树 ID", "序列"]
+    },
+    "dataset_image": {
+      "fields": ["DATASET_LABEL", "SIZE_FACTOR", "IMAGE_ROTATION", "IMAGE_SHIFT_H", "IMAGE_SHIFT_V", "MARGIN", "SHOW_INTERNAL"],
+      "data_columns": ["id", "image_file", "width"],
+      "data_column_labels": ["树 ID", "图片路径", "宽度（可选）"]
+    },
+    "dataset_linechart": {
+      "fields": ["DATASET_LABEL", "WIDTH", "HEIGHT_FACTOR", "DEFAULT_LINE_COLOR", "DEFAULT_DOT_COLOR", "LINE_WIDTH", "DOT_SIZE", "SHOW_LINE", "SHOW_DOTS", "VERTICAL_CHART", "CHART_SHIFT", "AXIS_X", "AXIS_Y", "LINE_COLORS", "MARGIN", "SHOW_INTERNAL"],
+      "data_columns": ["id", "position", "value"],
+      "data_column_labels": ["树 ID", "位置", "数值"]
+    },
+    "dataset_tanglegram": {
+      "fields": ["DATASET_LABEL", "STRIP_WIDTH", "SYMBOL_SPACING", "MAXIMUM_SYMBOL_SIZE", "DEFAULT_CONNECTION_COLOR", "MAXIMUM_LINE_WIDTH", "SHOW_LABELS", "SHOW_COLUMN_LABELS"],
+      "data_columns": ["id1", "id2", "color", "width"],
+      "data_column_labels": ["树 A ID", "树 B ID", "颜色（可选）", "宽度（可选）"]
+    },
+    "dataset_arrows": {
+      "fields": ["DATASET_LABEL", "COLOR"],
+      "data_columns": ["id", "position", "value"],
+      "data_column_labels": ["树 ID", "位置", "数值"]
+    },
+    "dataset_style": {
+      "fields": ["DATASET_LABEL", "COLOR"],
+      "data_columns": ["id", "type", "color", "style"],
+      "data_column_labels": ["树 ID", "类型", "颜色", "样式"]
+    },
+    "dataset_range": {
+      "fields": ["DATASET_LABEL", "COLOR", "RANGE_TYPE", "SHOW_LABELS", "LABEL_POSITION", "LABELS_VERTICAL", "FIT_LABELS", "STRAIGHT_LABELS", "LABEL_SIZE_FACTOR", "BRACKET_STYLE", "BRACKET_SIZE", "BRACKET_SHIFT", "BRACKET_BEHIND_DATASETS", "COVER_DATASETS", "COVER_LABELS"],
+      "data_columns": ["id", "label", "color"],
+      "data_column_labels": ["树 ID", "标签", "颜色"]
+    },
+    "dataset_timescale": {
+      "fields": ["DATASET_LABEL", "AUTO_SCALE", "SCALING_FACTOR", "POSITION_ABOVE", "SHOW_LABELS", "SHOW_RANGE_LABELS", "SHOW_VALUE_LABELS", "LABEL_POSITION", "RANGE_LABEL_COLOR", "RANGE_LABEL_AUTO_COLOR", "RANGE_LABEL_POSITION", "RANGE_LABEL_ROTATION", "SIZE_FACTOR"],
+      "data_columns": ["time_point", "label"],
+      "data_column_labels": ["时间点", "标签（可选）"]
+    },
+    "dataset_spacing": {
+      "fields": [],
+      "data_columns": ["id", "factor"],
+      "data_column_labels": ["树 ID", "间距系数"]
+    },
+    "dataset_popup_info": {
+      "fields": [],
+      "data_columns": ["id", "title", "content"],
+      "data_column_labels": ["树 ID", "弹窗标题", "弹窗内容（HTML）"]
+    },
+    "dataset_collapse": {
+      "fields": [],
+      "data_columns": ["id"],
+      "data_column_labels": ["节点 ID"]
+    },
+    "dataset_prune": {
+      "fields": [],
+      "data_columns": ["id"],
+      "data_column_labels": ["节点 ID（保留列表）"]
+    },
+    "dataset_meme": {
+      "fields": ["DATASET_LABEL", "BACKBONE_COLOR", "SHOW_DOMAIN_LABELS"],
+      "data_columns": ["id", "start", "end", "name"],
+      "data_column_labels": ["树 ID", "起始", "终止", "基序名"]
+    },
+    "dataset_placement": {
+      "fields": ["DATASET_LABEL", "SIZE_FACTOR"],
+      "data_columns": ["id", "position", "count", "label", "color"],
+      "data_column_labels": ["树 ID", "位置", "计数", "标签（可选）", "颜色（可选）"]
+    }
+  },
+  "fallback": {
+    "fields": ["DATASET_LABEL", "COLOR", "MARGIN"],
+    "note": "未收录类型按此最小字段集生成表单（开发方案 R7 降级策略）"
+  }
+}

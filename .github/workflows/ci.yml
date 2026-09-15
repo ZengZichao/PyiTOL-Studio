@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - name: Ruff (fast, non-blocking style gate)
+        run: ruff check src --select E,F,W,B,I --output-format=github || true
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PySide6 "pandas>=2.0,<4" PyYAML pytest pytest-qt
+      - name: Fetch the pyitol engine (distributed with the PyiTOL repo)
+        run: |
+          git clone --depth 1 https://github.com/ZengZichao/PyiTOL.git ../PyiTOL
+          echo "PYITOL_ENGINE_SRC=$PWD/../PyiTOL/PyiTOL-项目代码/src" >> "$GITHUB_ENV"
+          echo "PYTHONPATH=$PWD/src:$PWD/../PyiTOL/PyiTOL-项目代码/src" >> "$GITHUB_ENV"
+      - name: Install engine runtime deps
+        run: pip install dendropy
+      - name: Run tests (offscreen)
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python -m pytest -q
+
+  build-macos:
+    # Produces a local ad-hoc-signed .app artifact for manual Gatekeeper-free
+    # testing. Release signing + notarization are done by a maintainer (see
+    # packaging/README.md), NOT in CI.
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install build deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller PySide6 "pandas>=2.0,<4" PyYAML
+          git clone --depth 1 https://github.com/ZengZichao/PyiTOL.git ../PyiTOL
+          # 引擎以源码随 PyiTOL 仓库分发；若其打包目录不是这一层，请改为实际含 pyproject.toml 的路径
+          pip install "../PyiTOL/PyiTOL-项目代码"
+      - name: Build .app
+        run: pyinstaller packaging/pyitolstudio.spec --noconfirm
+      - name: Smoke test the bundle
+        env:
+          PYITOLSTUDIO_SMOKE: "1"
+        run: "dist/PyiTOL Studio.app/Contents/MacOS/PyiTOL Studio"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PyiTOL-Studio-macos
+          path: dist/PyiTOL Studio.app

@@ -1,0 +1,379 @@
+DATASET_TANGLEGRAM
+#In tanglegrams, an additional tree is displayed next to the main tree. Matching leaf nodes (or nodes specified in the DATA section below) are connected with lines
+#lines starting with a hash are comments and ignored during parsing
+#=================================================================#
+#                    MANDATORY SETTINGS                           #
+#=================================================================#
+#select the separator which is used to delimit the data below (TAB or SPACE).This separator must be used throughout this file. COMMA cannot be used in this dataset
+SEPARATOR TAB
+#SEPARATOR SPACE
+
+#label is used in the legend table (can be changed later)
+DATASET_LABEL	example_tanglegram
+
+#dataset color (can be changed later)
+COLOR	#00ff00
+
+
+
+#Newick formatted tree which will be displayed next to the main tree. Its leaf IDs which exactly match the main tree leaf IDs will be automatically connected.
+#Additional leaf connections (between non-matching leaves) can be defined below in the DATA section 
+#All newlines and spaces should be stripped from the tree string, and it must be terminated with a semicolon
+TANGLEGRAM_TREE	
+(((Giardia_lamblia:0.55482,(Leishmania_major:0.45664,((Apicomplexa_genus:0.14359,Thalassiosira_pseudonana:0.33483)Eukaryota:0.03495[42],((Cyanidioschyzon_merolae:0.
+38319,(Arabidopsis_thaliana:0.09366,Oryza_sativa:0.07623)Streptophyta:0.15770[100])Eukaryota:0.08133[96],(Dictyostelium_discoideum:0.34685,((Saccharomycetaceae_genu
+s:0.21170,Schizosaccharomyces_pombe:0.24665)Ascomycota:0.15370[100],(Caenorhabditis_genus:0.24324,((Anopheles_gambiae:0.10724,Drosophila_melanogaster:0.10233)Dipter
+a:0.09870[100],((Takifugu_rubripes:0.03142,Danio_rerio:0.05230)Actinopterygii:0.04335[100],(Gallus_gallus:0.04596,((Mus_musculus:0.01651,Rattus_norvegicus:0.03107)M
+urinae:0.00398[91],(Pan_troglodytes:0.03864,Homo_sapiens:0.00957)Hominidae:0.01549[100])Euarchontoglires:0.01629[99])Gnathostomata:0.01859[100])Gnathostomata:0.0968
+8[100])Metazoa:0.03693[95])Metazoa:0.09911[100])Eukaryota:0.04004[85])Eukaryota:0.02708[41])Eukaryota:0.02636[44])Eukaryota:0.06455[87])Eukaryota:0.10129[100])Eukar
+yota:0.57543[100]):0.88776);
+END_TANGLEGRAM_TREE
+
+
+#=================================================================#
+#     all other optional settings can be set or changed later     #
+#           in the web interface (under 'Datasets' tab)           #
+#=================================================================#
+
+
+#style for the default connections between the leaves (normal, dashed or dotted)
+DEFAULT_CONNECTION_STYLE	normal
+
+#default connection color (hex, RGB or RGBA notation)
+DEFAULT_CONNECTION_COLOR	#aabbcc
+
+#maximum connection width specified in the DATA section will be drawn with this value. All other widths will be scaled down proportionally. This will also be the default connection width
+MAXIMUM_LINE_WIDTH	2
+
+#display the leaf labels on the tanglegram tree
+SHOW_LABELS	1
+
+#leaf label size factor
+SIZE_FACTOR	1
+
+#leaf label shift in pixels (positive or negative), relative to the tanglegram tree
+LABEL_SHIFT	50
+
+#alignment of the tanglegram leaf labels (left or right), relative to the tanglegram tree
+LABEL_ALIGN	right
+
+TREE_PAN_V	550
+TREE_PAN_H	200
+
+
+COLUMN_LABELS	label_for_column_index_1	label_for_column_index_2	label_for_column_index_3	label_for_column_index_4	label_for_column_index_5
+
+
+TANGLEGRAM_EXTERNAL_MARGIN	50
+SHOW_COLUMN_LABELS	1
+
+#column label size factor
+COLUMN_LABEL_SIZE_FACTOR	0.9
+
+#column label shift in pixels (positive or negative)
+COLUMN_LABEL_SHIFT_X	0
+COLUMN_LABEL_SHIFT_Y	5
+
+#column label rotation
+COLUMN_LABEL_ROTATION	30
+
+
+#width of the colored strips
+STRIP_WIDTH	55
+
+#always show internal values; if set, values associated to internal nodes will be displayed even if these nodes are not collapsed.
+SHOW_INTERNAL	0
+
+#When multiple colored strips are present on the tanglegram, they will be separated by this amount of pixels
+STRIP_SPACING	0
+
+#border width; if set above 0, a border of specified width (in pixels) will be drawn around the color strip
+STRIP_BORDER_WIDTH	1.4
+
+#border color; used when STRIP_BORDER_WIDTH is above 0
+STRIP_BORDER_COLOR	#0000ff
+
+#if set to 1, border will be drawn completely around each colored strip box separately
+COMPLETE_BORDER	1
+
+SHOW_STRIP_LABELS	1
+
+#position of the strip label within the box; 'top', 'center' or 'bottom'
+STRIP_LABEL_POSITION	top
+
+#strip label size factor (relative to the tree leaf labels)
+STRIP_LABEL_SIZE_FACTOR	0.4
+
+
+#rotation of the strip labels; used only in rectangular tree display mode
+STRIP_LABEL_ROTATION	30
+
+#strip label shift in pixels (positive or negative)
+STRIP_LABEL_SHIFT	0
+
+STRIP_LABEL_COLOR	#00ff00
+
+#calculate the strip label color automatically (black or white), based on the darkness of the color strip
+STRIP_LABEL_AUTO_COLOR	1
+
+MAXIMUM_SYMBOL_SIZE	35
+
+#When multiple external symbol columns are present on the tanglegram, they will be separated by this amount of pixels
+SYMBOL_SPACING	0
+
+#border width; if set above 0, a border of specified width (in pixels) will be drawn around each symbol
+SYMBOL_BORDER_WIDTH	1.2
+
+#border color; used when SYMBOL_BORDER_WIDTH is above 0
+SYMBOL_BORDER_COLOR	#ff0000
+
+
+#=================================================================#
+#       Actual data follows after the "DATA" keyword              #
+#=================================================================#
+
+DATA
+#Each line defines a single connection between 2 leaves and consists of the following fields:
+#MAIN_TREE_LEAF_ID TANGLEGRAM_TREE_LEAF_ID WIDTH COLOR STYLE LABEL
+#Only the leaf IDs are required. You can also specify the same ID in both trees, when a specific, non-default style should be used for that particular connection
+#All connection widths will be normalized based on the MAXIMUM_LINE_WIDTH specified for the whole dataset
+#STYLE defines the connection line style, and can be one of 'normal', 'dashed' or 'dotted'.
+#color can be specified in hexadecimal, RGB or RGBA notation
+#label will be shown in the mouseover info popup, if defined
+
+connect	184922	Giardia_lamblia	4	#ff0000	dotted	test label
+connect	9606	Homo_sapiens	2	#0000ff	normal	Human label
+connect	9606	Diptera	2	#0000ff	normal	Human label
+connect	9606	Pan_troglodytes	2	#0000ff	normal	Human label
+connect	7227	Drosophila_melanogaster	2	#000000	normal	Diptera links
+connect	180454	Anopheles_gambiae	2	#00ffff	dashed	Diptera links
+connect	6239	Caenorhabditis_genus	1	#00ff00	dashed	Caenorhabditis links
+connect	6238	Caenorhabditis_genus	1	#00ff00	dashed	Caenorhabditis links
+
+
+style	Oryza_sativa|Cyanidioschyzon_merolae	branch	clade	#00ff00	1	normal
+style	Oryza_sativa|Cyanidioschyzon_merolae	label	clade	#00ff00	1	normal	#ff0000
+style	Oryza_sativa|Cyanidioschyzon_merolae	branch	node	#0000ff	5	dashed
+
+
+
+#Metazoa clade (the last common ancestor of Caenorhabditis_elegans and Homo_sapiens) will have a blue box as colored strip 1
+colorstrip	3	Oryza_sativa|Cyanidioschyzon_merolae	#ffff00	box2
+colorstrip	3	Metazoa	#ffff00	box2
+colorstrip	1	Homo_sapiens	#6c29bd	Label 0
+colorstrip	1	Giardia_lamblia	#6c29bd	Label 0
+colorstrip	1	Leishmania_major	#5707a6	Label 1
+colorstrip	1	Apicomplexa_genus	#08749b	Label 2
+colorstrip	1	Thalassiosira_pseudonana	#abf34f	Label 3
+colorstrip	1	Cyanidioschyzon_merolae	#073998	Label 4
+colorstrip	1	Arabidopsis_thaliana	#aeec01	Label 5
+colorstrip	1	Oryza_sativa	#81a2ea	Label 6
+colorstrip	1	Dictyostelium_discoideum	#c6bbba	Label 7
+colorstrip	1	Saccharomycetaceae_genus	#5e4f77	Label 8
+colorstrip	1	Schizosaccharomyces_pombe	#0a1f19	Label 9
+colorstrip	1	Caenorhabditis_genus	#eaa846	Label 10
+colorstrip	1	Anopheles_gambiae	#1dc3b1	Label 11
+colorstrip	1	Drosophila_melanogaster	#c44da1	Label 12
+colorstrip	1	Takifugu_rubripes	#f2e2eb	Label 13
+colorstrip	1	Danio_rerio	#345400	Label 14
+colorstrip	1	Gallus_gallus	#1ceb82	Label 15
+colorstrip	1	Mus_musculus	#446249	Label 16
+colorstrip	1	Rattus_norvegicus	#018a83	Label 17
+colorstrip	1	Pan_troglodytes	#89c6f6	Label 18
+colorstrip	4	Giardia_lamblia	#7e8edd	Label 0
+colorstrip	4	Leishmania_major	#9b1fdd	Label 1
+colorstrip	4	Apicomplexa_genus	#b78eed	Label 2
+colorstrip	4	Thalassiosira_pseudonana	#c40f4a	Label 3
+colorstrip	4	Cyanidioschyzon_merolae	#8c3e28	Label 4
+colorstrip	4	Arabidopsis_thaliana	#c54454	Label 5
+colorstrip	4	Oryza_sativa	#de8e5f	Label 6
+colorstrip	4	Dictyostelium_discoideum	#aea4a7	Label 7
+colorstrip	4	Saccharomycetaceae_genus	#2fc585	Label 8
+colorstrip	4	Schizosaccharomyces_pombe	#7bfaa9	Label 9
+colorstrip	4	Caenorhabditis_genus	#9b5d4b	Label 10
+colorstrip	4	Anopheles_gambiae	#622aae	Label 11
+colorstrip	4	Drosophila_melanogaster	#71eb7e	Label 12
+colorstrip	4	Takifugu_rubripes	#ade09e	Label 13
+colorstrip	4	Danio_rerio	#88f702	Label 14
+colorstrip	4	Gallus_gallus	#cda31c	Label 15
+colorstrip	4	Mus_musculus	#69d706	Label 16
+colorstrip	4	Rattus_norvegicus	#ad0f67	Label 17
+colorstrip	4	Pan_troglodytes	#ebd49a	Label 18
+colorstrip	3	Giardia_lamblia	#d73cc2	Label 0
+colorstrip	3	Leishmania_major	#d80642	Label 1
+colorstrip	3	Apicomplexa_genus	#2afa15	Label 2
+colorstrip	3	Thalassiosira_pseudonana	#3b302b	Label 3
+colorstrip	3	Cyanidioschyzon_merolae	#e3c91c	Label 4
+colorstrip	3	Arabidopsis_thaliana	#dccf71	Label 5
+colorstrip	3	Oryza_sativa	#fd7573	Label 6
+colorstrip	3	Dictyostelium_discoideum	#3570d5	Label 7
+colorstrip	3	Saccharomycetaceae_genus	#b3f11e	Label 8
+colorstrip	3	Schizosaccharomyces_pombe	#f24ed1	Label 9
+colorstrip	3	Caenorhabditis_genus	#f9fb28	Label 10
+colorstrip	3	Anopheles_gambiae	#1fea4c	Label 11
+colorstrip	3	Drosophila_melanogaster	#2368ad	Label 12
+colorstrip	3	Takifugu_rubripes	#5af259	Label 13
+colorstrip	3	Danio_rerio	#49e4d2	Label 14
+colorstrip	3	Gallus_gallus	#33a2ea	Label 15
+colorstrip	3	Mus_musculus	#55585c	Label 16
+colorstrip	3	Rattus_norvegicus	#c0909e	Label 17
+colorstrip	3	Pan_troglodytes	#ab9dbc	Label 18
+colorstrip	4	Homo_sapiens	#6c29bd	Label 0
+symbol	Giardia_lamblia	4	20	rgba(178,243,39,0.1)	1	-2	label_Giardia_lamblia
+symbol	Leishmania_major	5	43	rgba(41,85,138,0.5)	0	-2	label_Leishmania_major
+symbol	Apicomplexa_genus	2	47	rgba(17,91,66,0.4)	0	-2	label_Apicomplexa_genus
+symbol	Thalassiosira_pseudonana	1	18	rgba(126,218,168,0.4)	1	-2	label_Thalassiosira_pseudonana
+symbol	Cyanidioschyzon_merolae	3	49	rgba(103,145,215,0.6)	0	-2	label_Cyanidioschyzon_merolae
+symbol	Arabidopsis_thaliana	1	48	rgba(158,203,209,0.9)	0	-2	label_Arabidopsis_thaliana
+symbol	Oryza_sativa	4	18	rgba(33,66,211,0.6)	0	-2	label_Oryza_sativa
+symbol	Dictyostelium_discoideum	4	15	rgba(29,74,46,1.0)	1	-2	label_Dictyostelium_discoideum
+symbol	Saccharomycetaceae_genus	1	42	rgba(200,43,31,1.0)	0	-2	label_Saccharomycetaceae_genus
+symbol	Schizosaccharomyces_pombe	1	40	rgba(109,145,127,0.3)	1	-2	label_Schizosaccharomyces_pombe
+symbol	Caenorhabditis_genus	4	41	rgba(164,200,117,0.8)	1	-2	label_Caenorhabditis_genus
+symbol	Anopheles_gambiae	2	27	rgba(223,191,249,0.5)	1	-2	label_Anopheles_gambiae
+symbol	Drosophila_melanogaster	1	43	rgba(171,224,82,0.3)	1	-2	label_Drosophila_melanogaster
+symbol	Takifugu_rubripes	1	40	rgba(39,148,201,0.7)	1	-2	label_Takifugu_rubripes
+symbol	Danio_rerio	1	38	rgba(39,139,132,0.7)	1	-2	label_Danio_rerio
+symbol	Gallus_gallus	5	28	rgba(6,189,84,0.4)	0	-2	label_Gallus_gallus
+symbol	Mus_musculus	5	16	rgba(158,113,80,0.3)	1	-2	label_Mus_musculus
+symbol	Rattus_norvegicus	4	11	rgba(136,166,173,0.8)	0	-2	label_Rattus_norvegicus
+symbol	Pan_troglodytes	5	42	rgba(203,217,31,0.6)	1	-2	label_Pan_troglodytes
+symbol	Homo_sapiens	4	29	rgba(98,132,41,0.5)	1	-2	label_Homo_sapiens
+symbol	Giardia_lamblia	2	44	rgba(34,0,68,1.0)	0	-5	label_Giardia_lamblia
+symbol	Leishmania_major	3	21	rgba(213,217,251,1.0)	1	-5	label_Leishmania_major
+symbol	Apicomplexa_genus	3	33	rgba(84,116,186,0.3)	1	-5	label_Apicomplexa_genus
+symbol	Thalassiosira_pseudonana	1	17	rgba(196,215,137,0.3)	0	-5	label_Thalassiosira_pseudonana
+symbol	Cyanidioschyzon_merolae	1	37	rgba(145,90,10,0.9)	0	-5	label_Cyanidioschyzon_merolae
+symbol	Arabidopsis_thaliana	3	44	rgba(66,130,143,0.4)	0	-5	label_Arabidopsis_thaliana
+symbol	Oryza_sativa	5	37	rgba(161,233,54,0.4)	0	-5	label_Oryza_sativa
+symbol	Dictyostelium_discoideum	2	19	rgba(121,149,96,0.4)	1	-5	label_Dictyostelium_discoideum
+symbol	Saccharomycetaceae_genus	2	35	rgba(28,36,149,0.8)	0	-5	label_Saccharomycetaceae_genus
+symbol	Schizosaccharomyces_pombe	3	43	rgba(156,9,165,0.3)	0	-5	label_Schizosaccharomyces_pombe
+symbol	Caenorhabditis_genus	3	21	rgba(254,100,60,1.0)	1	-5	label_Caenorhabditis_genus
+symbol	Anopheles_gambiae	2	43	rgba(253,34,111,0.7)	0	-5	label_Anopheles_gambiae
+symbol	Drosophila_melanogaster	3	34	rgba(238,197,27,0.4)	1	-5	label_Drosophila_melanogaster
+symbol	Takifugu_rubripes	1	15	rgba(177,41,224,0.4)	0	-5	label_Takifugu_rubripes
+symbol	Danio_rerio	3	31	rgba(232,49,27,0.3)	1	-5	label_Danio_rerio
+symbol	Gallus_gallus	5	42	rgba(41,131,230,0.6)	1	-5	label_Gallus_gallus
+symbol	Mus_musculus	2	32	rgba(95,72,185,0.6)	0	-5	label_Mus_musculus
+symbol	Rattus_norvegicus	5	37	rgba(155,200,127,0.5)	1	-5	label_Rattus_norvegicus
+symbol	Pan_troglodytes	4	42	rgba(15,181,149,0.2)	0	-5	label_Pan_troglodytes
+symbol	Homo_sapiens	3	24	rgba(125,255,250,0.4)	1	-5	label_Homo_sapiens
+
+symbol	Eukaryota	1	26	rgba(151,214,85,0.5)	1	0.5	label_Eukaryota
+symbol	Eukaryota	1	14	rgba(138,221,128,0.6)	0	0.89	label_Eukaryota
+symbol	Eukaryota	3	32	rgba(252,105,134,0.9)	1	0.92	label_Eukaryota
+symbol	Giardia_lamblia	1	42	rgba(147,104,115,0.5)	0	0.5	label_Giardia_lamblia
+symbol	Giardia_lamblia	3	46	rgba(112,197,64,0.9)	0	0.73	label_Giardia_lamblia
+symbol	Giardia_lamblia	4	14	rgba(226,216,84,0.7)	1	0.52	label_Giardia_lamblia
+symbol	Eukaryota	3	22	rgba(121,214,250,0.2)	0	0.5	label_Eukaryota
+symbol	Eukaryota	4	33	rgba(212,39,235,0.2)	1	1	label_Eukaryota
+symbol	Eukaryota	2	44	rgba(190,100,55,0.4)	0	0.95	label_Eukaryota
+symbol	Leishmania_major	5	45	rgba(210,121,106,0.4)	0	0.5	label_Leishmania_major
+symbol	Leishmania_major	2	10	rgba(171,106,242,0.4)	1	0.38	label_Leishmania_major
+symbol	Leishmania_major	4	14	rgba(119,47,14,0.8)	1	0.13	label_Leishmania_major
+symbol	Eukaryota	1	10	rgba(171,142,59,0.3)	1	0.5	label_Eukaryota
+symbol	Eukaryota	2	17	rgba(253,232,205,1.0)	1	0.13	label_Eukaryota
+symbol	Eukaryota	5	25	rgba(77,185,78,0.9)	0	0.09	label_Eukaryota
+symbol	Eukaryota	2	33	rgba(92,7,118,0.7)	1	0.5	label_Eukaryota
+symbol	Eukaryota	3	33	rgba(37,149,14,0.5)	1	0.51	label_Eukaryota
+symbol	Eukaryota	2	44	rgba(158,230,33,0.6)	1	0.77	label_Eukaryota
+symbol	Apicomplexa_genus	1	27	rgba(183,129,219,0.9)	1	0.5	label_Apicomplexa_genus
+symbol	Apicomplexa_genus	2	29	rgba(154,246,182,0.8)	1	0.72	label_Apicomplexa_genus
+symbol	Apicomplexa_genus	5	34	rgba(251,76,195,0.3)	1	0.45	label_Apicomplexa_genus
+symbol	Thalassiosira_pseudonana	2	35	rgba(214,147,44,0.7)	0	0.5	label_Thalassiosira_pseudonana
+symbol	Thalassiosira_pseudonana	4	10	rgba(29,133,58,0.2)	0	0.3	label_Thalassiosira_pseudonana
+symbol	Thalassiosira_pseudonana	3	48	rgba(32,5,60,0.8)	1	0.78	label_Thalassiosira_pseudonana
+symbol	Eukaryota	2	27	rgba(13,146,225,0.7)	1	0.5	label_Eukaryota
+symbol	Eukaryota	3	43	rgba(80,55,116,1.0)	0	0.37	label_Eukaryota
+symbol	Eukaryota	2	29	rgba(200,239,179,0.9)	1	0.73	label_Eukaryota
+symbol	Eukaryota	2	23	rgba(74,79,13,0.3)	1	0.5	label_Eukaryota
+symbol	Eukaryota	1	24	rgba(71,110,47,0.9)	0	0.13	label_Eukaryota
+symbol	Eukaryota	4	10	rgba(62,38,251,0.8)	1	0.82	label_Eukaryota
+symbol	Cyanidioschyzon_merolae	2	15	rgba(96,19,20,0.2)	0	0.5	label_Cyanidioschyzon_merolae
+symbol	Cyanidioschyzon_merolae	1	22	rgba(36,246,179,1.0)	1	0.13	label_Cyanidioschyzon_merolae
+symbol	Cyanidioschyzon_merolae	5	12	rgba(64,157,60,0.4)	0	0.21	label_Cyanidioschyzon_merolae
+symbol	Streptophyta	2	13	rgba(67,234,18,0.8)	1	0.5	label_Streptophyta
+symbol	Streptophyta	3	24	rgba(152,238,5,0.5)	0	0.68	label_Streptophyta
+symbol	Streptophyta	2	16	rgba(245,55,247,0.5)	1	0.05	label_Streptophyta
+symbol	Arabidopsis_thaliana	5	21	rgba(44,118,110,0.5)	0	0.5	label_Arabidopsis_thaliana
+symbol	Arabidopsis_thaliana	1	25	rgba(134,127,158,0.4)	0	0.46	label_Arabidopsis_thaliana
+symbol	Arabidopsis_thaliana	5	16	rgba(200,26,122,0.1)	1	0.98	label_Arabidopsis_thaliana
+symbol	Oryza_sativa	3	29	rgba(37,196,41,0.2)	0	0.5	label_Oryza_sativa
+symbol	Oryza_sativa	4	23	rgba(67,43,135,0.2)	1	0.14	label_Oryza_sativa
+symbol	Oryza_sativa	4	12	rgba(39,14,105,0.7)	1	0.57	label_Oryza_sativa
+symbol	Eukaryota	2	49	rgba(141,175,163,0.8)	1	0.5	label_Eukaryota
+symbol	Eukaryota	2	12	rgba(213,104,150,0.2)	0	0.64	label_Eukaryota
+symbol	Eukaryota	4	23	rgba(96,86,26,0.7)	1	0.31	label_Eukaryota
+symbol	Dictyostelium_discoideum	2	44	rgba(157,254,167,0.6)	0	0.5	label_Dictyostelium_discoideum
+symbol	Dictyostelium_discoideum	5	33	rgba(171,212,254,0.7)	1	0.48	label_Dictyostelium_discoideum
+symbol	Dictyostelium_discoideum	2	32	rgba(137,48,187,0.3)	1	0.96	label_Dictyostelium_discoideum
+symbol	Eukaryota	3	41	rgba(187,46,154,0.8)	1	0.5	label_Eukaryota
+symbol	Eukaryota	1	23	rgba(208,158,80,0.5)	0	0.23	label_Eukaryota
+symbol	Eukaryota	5	19	rgba(112,1,254,0.3)	0	0.45	label_Eukaryota
+symbol	Ascomycota	4	47	rgba(110,118,97,0.2)	1	0.5	label_Ascomycota
+symbol	Ascomycota	3	46	rgba(18,91,195,0.6)	1	0.2	label_Ascomycota
+symbol	Ascomycota	5	37	rgba(166,215,161,0.5)	0	0.95	label_Ascomycota
+symbol	Saccharomycetaceae_genus	1	31	rgba(65,233,222,0.3)	0	0.5	label_Saccharomycetaceae_genus
+symbol	Saccharomycetaceae_genus	2	28	rgba(109,177,206,0.6)	0	0.65	label_Saccharomycetaceae_genus
+symbol	Saccharomycetaceae_genus	2	47	rgba(117,201,208,0.8)	0	0.87	label_Saccharomycetaceae_genus
+symbol	Schizosaccharomyces_pombe	5	45	rgba(0,235,203,0.3)	1	0.5	label_Schizosaccharomyces_pombe
+symbol	Schizosaccharomyces_pombe	4	35	rgba(2,106,16,0.1)	1	0.69	label_Schizosaccharomyces_pombe
+symbol	Schizosaccharomyces_pombe	3	21	rgba(50,129,120,0.5)	0	0.95	label_Schizosaccharomyces_pombe
+symbol	Metazoa	2	35	rgba(3,84,185,1.0)	0	0.5	label_Metazoa
+symbol	Metazoa	4	10	rgba(9,217,51,0.2)	0	0.64	label_Metazoa
+symbol	Metazoa	5	31	rgba(105,170,126,0.4)	0	0.45	label_Metazoa
+symbol	Caenorhabditis_genus	5	19	rgba(108,62,57,0.7)	1	0.5	label_Caenorhabditis_genus
+symbol	Caenorhabditis_genus	1	17	rgba(249,60,94,1.0)	0	0.88	label_Caenorhabditis_genus
+symbol	Caenorhabditis_genus	4	40	rgba(59,11,14,0.3)	0	0.27	label_Caenorhabditis_genus
+symbol	Metazoa	2	14	rgba(94,179,2,0.9)	1	0.5	label_Metazoa
+symbol	Metazoa	5	13	rgba(239,205,26,0.7)	0	0.1	label_Metazoa
+symbol	Metazoa	4	36	rgba(167,20,161,0.6)	0	0.2	label_Metazoa
+symbol	Diptera	3	27	rgba(96,180,249,0.4)	0	0.5	label_Diptera
+symbol	Diptera	2	19	rgba(252,82,236,0.9)	0	0.58	label_Diptera
+symbol	Diptera	5	45	rgba(163,206,13,0.1)	0	0.87	label_Diptera
+symbol	Anopheles_gambiae	1	34	rgba(60,241,54,1.0)	1	0.5	label_Anopheles_gambiae
+symbol	Anopheles_gambiae	5	49	rgba(40,74,63,0.3)	0	0.91	label_Anopheles_gambiae
+symbol	Anopheles_gambiae	3	12	rgba(49,37,204,0.6)	0	0.69	label_Anopheles_gambiae
+symbol	Drosophila_melanogaster	4	25	rgba(68,105,85,0.6)	0	0.5	label_Drosophila_melanogaster
+symbol	Drosophila_melanogaster	1	31	rgba(112,56,115,0.7)	1	0.7	label_Drosophila_melanogaster
+symbol	Drosophila_melanogaster	2	10	rgba(184,29,94,0.1)	0	0.03	label_Drosophila_melanogaster
+symbol	Gnathostomata	3	20	rgba(126,185,171,0.3)	1	0.5	label_Gnathostomata
+symbol	Gnathostomata	1	21	rgba(31,33,155,0.4)	0	0.32	label_Gnathostomata
+symbol	Gnathostomata	3	36	rgba(40,249,48,0.5)	1	0.01	label_Gnathostomata
+symbol	Actinopterygii	5	13	rgba(129,207,184,0.9)	1	0.5	label_Actinopterygii
+symbol	Actinopterygii	1	46	rgba(1,199,166,0.9)	1	0.99	label_Actinopterygii
+symbol	Actinopterygii	1	49	rgba(119,163,192,0.6)	1	0.4	label_Actinopterygii
+symbol	Takifugu_rubripes	1	47	rgba(74,78,247,0.7)	1	0.5	label_Takifugu_rubripes
+symbol	Takifugu_rubripes	3	45	rgba(146,72,213,0.5)	1	0.31	label_Takifugu_rubripes
+symbol	Takifugu_rubripes	1	43	rgba(242,29,245,0.3)	0	0.41	label_Takifugu_rubripes
+symbol	Danio_rerio	1	42	rgba(177,41,30,0.7)	1	0.5	label_Danio_rerio
+symbol	Danio_rerio	4	42	rgba(83,154,139,1.0)	0	0.23	label_Danio_rerio
+symbol	Danio_rerio	1	40	rgba(175,74,184,0.2)	1	0.27	label_Danio_rerio
+symbol	Gnathostomata	3	24	rgba(70,36,74,1.0)	1	0.5	label_Gnathostomata
+symbol	Gnathostomata	3	18	rgba(118,95,174,0.7)	0	0.24	label_Gnathostomata
+symbol	Gnathostomata	5	34	rgba(208,79,192,0.3)	0	0.66	label_Gnathostomata
+symbol	Gallus_gallus	3	38	rgba(154,204,128,0.4)	0	0.5	label_Gallus_gallus
+symbol	Gallus_gallus	5	20	rgba(164,194,77,0.6)	1	0.53	label_Gallus_gallus
+symbol	Gallus_gallus	4	26	rgba(160,134,177,0.1)	1	0.69	label_Gallus_gallus
+symbol	Euarchontoglires	5	24	rgba(43,127,174,0.5)	0	0.5	label_Euarchontoglires
+symbol	Euarchontoglires	3	35	rgba(27,182,39,0.3)	1	0.34	label_Euarchontoglires
+symbol	Euarchontoglires	5	19	rgba(120,135,171,1.0)	0	0.34	label_Euarchontoglires
+symbol	Murinae	3	23	rgba(160,151,201,0.2)	1	0.5	label_Murinae
+symbol	Murinae	1	31	rgba(50,68,219,0.8)	0	0.09	label_Murinae
+symbol	Murinae	5	37	rgba(45,96,100,0.2)	0	0.2	label_Murinae
+symbol	Mus_musculus	5	20	rgba(156,229,62,0.6)	0	0.5	label_Mus_musculus
+symbol	Mus_musculus	5	26	rgba(151,19,244,0.2)	1	0.87	label_Mus_musculus
+symbol	Mus_musculus	1	36	rgba(122,152,187,0.7)	1	0.77	label_Mus_musculus
+symbol	Rattus_norvegicus	3	41	rgba(136,36,217,0.3)	1	0.5	label_Rattus_norvegicus
+symbol	Rattus_norvegicus	5	49	rgba(90,20,114,0.1)	0	0.59	label_Rattus_norvegicus
+symbol	Rattus_norvegicus	4	27	rgba(5,95,94,0.7)	0	0.93	label_Rattus_norvegicus
+symbol	Hominidae	5	43	rgba(238,37,165,0.3)	1	0.5	label_Hominidae
+symbol	Hominidae	4	18	rgba(158,11,210,0.6)	0	0.04	label_Hominidae
+symbol	Hominidae	1	47	rgba(48,181,255,0.7)	0	0.91	label_Hominidae
+symbol	Pan_troglodytes	2	25	rgba(180,252,101,0.8)	0	0.5	label_Pan_troglodytes
+symbol	Pan_troglodytes	5	10	rgba(58,32,192,0.6)	1	0.05	label_Pan_troglodytes
+symbol	Pan_troglodytes	4	31	rgba(255,235,25,0.2)	1	0.25	label_Pan_troglodytes
+symbol	Homo_sapiens	4	30	rgba(203,191,249,0.8)	0	0.5	label_Homo_sapiens
+symbol	Homo_sapiens	3	15	rgba(131,121,120,1.0)	0	0.3	label_Homo_sapiens
+symbol	Homo_sapiens	3	40	rgba(194,227,93,0.9)	1	0.9	label_Homo_sapiens

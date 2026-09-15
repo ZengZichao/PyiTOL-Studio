@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyitol-studio"
+version = "0.1.0"
+description = "PyiTOL Studio — Desktop companion for iTOL annotation (macOS GUI for the pyitol engine)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "PyiTOL Studio contributors" }]
+keywords = ["iTOL", "phylogenetics", "annotation", "GUI", "PySide6"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: MacOS X",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "pyitol>=1.0.3",
+    "PySide6>=6.5",
+    "pandas>=2.0",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "pytest-qt>=4.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/ZengZichao/PyiTOL-Studio"
+Repository = "https://github.com/ZengZichao/PyiTOL-Studio"
+Issues = "https://github.com/ZengZichao/PyiTOL-Studio/issues"
+
+[project.gui-scripts]
+pyitol-studio = "pyitolstudio.app.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pyitolstudio = ["resources/*.json", "resources/icons/*.svg"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"

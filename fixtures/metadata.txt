@@ -1,0 +1,29 @@
+METADATA
+#use this template to set or update the metadata associated with tree nodes. Metadata values can be numeric or textual
+
+#lines starting with a hash are comments and ignored during parsing
+
+#=================================================================#
+#                    MANDATORY SETTINGS                           #
+#=================================================================#
+#select the separator which is used to delimit the data below (TAB,SPACE or COMMA).This separator must be used throughout this file (except in the SEPARATOR line, which uses space).
+
+#SEPARATOR TAB
+#SEPARATOR SPACE
+SEPARATOR COMMA
+
+#define the metadata field names. Field names can be any text string. If 'bootstrap' is specified, the original bootstrap values in the tree will be overwritten (and must be present)
+
+FIELD_LABELS,bootstrap,bootstrap0,bootstrap1,prob_stddev,example_textual_field
+
+#Internal tree nodes can be specified by using IDs directly, or through the 'last common ancestor' method described in iTOL help pages
+#=================================================================#
+#       Actual data follows after the "DATA" keyword              #
+#=================================================================#
+DATA
+#NODE_ID,FIELD1_METADATA_VALUE,FIELD2_METADATA_VALUE....
+
+#Examples
+9606|9031,99,100,90,0,text value
+184922|9606,95,98,88,0,example 2
+9606,0,0,0,1e-1,another field value

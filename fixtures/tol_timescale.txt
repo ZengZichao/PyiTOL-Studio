@@ -1,0 +1,114 @@
+DATASET_TIMESCALE
+#Timescale datasets are visualized as a set of colored rectangles below the tree,
+#allowing simple creation of various geological and other timescales.
+#These datasets can also be automatically generated from the International Chronostratigraphic Chart data (this function is on the advanced tab of the control panel)
+
+#lines starting with a hash sign are comments and ignored during parsing
+#=================================================================#
+#                    MANDATORY SETTINGS                           #
+#=================================================================#
+#select the separator which is used to delimit the data below (TAB,SPACE or COMMA).This separator must be used throughout this file.
+#SEPARATOR TAB
+#SEPARATOR SPACE
+SEPARATOR COMMA
+
+#label is used in the legend table (can be changed later)
+DATASET_LABEL,example geological scale
+
+#dataset color in the legend table
+COLOR,#0000ff
+
+
+#=================================================================#
+#                    OPTIONAL SETTINGS                            #
+#=================================================================#
+
+#=================================================================#
+#        all optional settings can be set or changed later        #
+#           in the web interface (under 'Datasets' tab)           #
+#=================================================================#
+
+#the correlation factor between the tree branch lengths and the time range values specified below in the DATA section. Tree branch lenghts are multiplied
+#with this factor to determine the position of the ranges specified in the DATA section
+#if you leave the factor at 1, you can use the branch length values directly
+SCALING_FACTOR,1
+
+#if AUTO_SCALE is set to 1, the SCALING_FACTOR will be determined automatically from the tree height and the minimum/maximum range values in the dataset,
+#so that the time scale covers the complete height of the tree. You can adjust the SCALING_FACTOR later through the dataset options
+AUTO_SCALE,1
+
+#if set to 1, position the time scale above the tree (the default is below the tree)
+POSITION_ABOVE,0
+
+#Display values below the timescale
+SHOW_VALUE_LABELS,1
+
+#value label size factor
+VALUE_LABEL_SIZE_FACTOR,0.5
+
+#value label rotation angle
+VALUE_LABEL_ROTATION,0
+
+#value label shift in pixels (positive or negative)
+VALUE_LABEL_SHIFT,0
+
+
+#Display labels inside the individual range boxes
+SHOW_RANGE_LABELS,1
+
+#Label alignment within the range box. It can be left, center or right
+RANGE_LABEL_POSITION,center
+
+#Label font size in pixels
+RANGE_LABEL_SIZE,14
+
+#rotate all range labels by the specified angle
+RANGE_LABEL_ROTATION,0
+
+#shift all range labels horizontally and/or vertically
+RANGE_LABEL_SHIFT_X,0
+RANGE_LABEL_SHIFT_Y,0
+
+#range label color
+RANGE_LABEL_COLOR,#000000
+
+#calculate the label color automatically (black or white), based on the darkness of the range color
+RANGE_LABEL_AUTO_COLOR,1
+
+#display or hide the dataset label next to the time scale bar
+SHOW_LABELS,1
+
+#dataset label size factor
+SIZE_FACTOR,1
+
+#dataset label rotation
+LABEL_ROTATION,0
+
+#dataset label shift in pixels (positive or negative)
+LABEL_SHIFT_X,0
+LABEL_SHIFT_X,0
+
+#position of the dataset label relative to the timescale bar (start,end or center)
+LABEL_POSITION,start
+
+#=================================================================#
+#       Actual data follows after the "DATA" keyword              #
+#=================================================================#
+#the following fields are available in each line:
+
+#RANGE_START,RANGE_END,FILL_COLOR,GRADIENT_COLOR,LABEL_TEXT,LABEL_STYLE
+
+#The box size is defined through RANGE_START and RANGE_END, with zero corresponding to the tree top.
+#Since zero denotes the tree top, RANGE_START is always larger than the RANGE_END, and range values increase towards the tree root.
+#If GRADIENT_FILL color is defined, the box will be filled with a gradient from FILL_COLOR to GRADIENT_COLOR.
+#LABEL_STYLE is optional, and can be set to 'normal', 'bold', 'italic' or 'bold-italic'
+
+
+DATA
+#an example geological scale with 5 boxes
+
+2.58,0,#999999,#ffffff,Quartenary,normal
+23.03,2.58,#FF0000,#00ff00,Neogene,bold
+66,23.03,#00FF00,#0000ff,Paloegene,italic
+145,66,#0000FF,#ff0000,Cretaceous,normal
+201.3,145,#FF00FF,#ff0000,Jurrasic,bold-italic

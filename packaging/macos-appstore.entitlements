@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Mac App Store 沙盒权限（hardened runtime + sandbox 由 App Store 强制要求）。
+  用途：上传 iTOL 需要出网（network.client）；用户通过原生对话框选择工程 / 模板 /
+  树文件，因此授予 user-selected 读写；不含 iCloud、不含入站网络、不含调试 entitlement。
+  本地 Developer ID 直分发（DMG）通常用更宽的权限或关闭沙盒——见 packaging/README.md。
+-->
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+</dict>
+</plist>

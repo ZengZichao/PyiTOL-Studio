@@ -17,7 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable
 
-from PySide6.QtCore import QEasingCurve, QEvent, QModelIndex, QPropertyAnimation, QRect, QSize, Qt
+from PySide6.QtCore import QEasingCurve, QModelIndex, QPropertyAnimation, QRect, QSize, Qt
 from PySide6.QtGui import QFont, QFontMetrics, QPainter, QPainterPath
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -32,7 +32,7 @@ from PySide6.QtWidgets import (
 
 from ..i18n import tr
 from ..icons import icon, icon_pixmap
-from ..theme import FONT_SIZE, FONT_SIZE_CAPTION, FONT_SIZE_MONO, MONO_FAMILIES, RADIUS_S, SPACE_2, SPACE_3
+from ..theme import FONT_SIZE, FONT_SIZE_CAPTION, FONT_SIZE_MONO, RADIUS_S, SPACE_2, SPACE_3
 from ..theme_mode import theme_color, theme_qcolor
 
 KIND_UNIT = "unit"

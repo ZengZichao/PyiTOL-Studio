@@ -67,7 +67,7 @@ def column_labels(columns: list[str], idl_columns: list[str], idl_labels: list[s
     Dynamic columns reuse the label of the IDL column they extend
     (``value_7`` → the label of ``value_1``).
     """
-    mapping = dict(zip(idl_columns, idl_labels))
+    mapping = dict(zip(idl_columns, idl_labels, strict=False))
     labels: list[str] = []
     for column in columns:
         if column in mapping:

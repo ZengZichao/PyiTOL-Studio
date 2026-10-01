@@ -7,28 +7,22 @@ import tempfile
 from pathlib import Path
 
 import pandas as pd
-
 from PySide6.QtCore import QSettings, Qt, Signal
 from PySide6.QtGui import QAction, QActionGroup, QKeySequence
 from PySide6.QtWidgets import (
-    QHBoxLayout,
-    QMessageBox,
-    QSizePolicy,
-    QLabel,
-    QListWidget,
-    QListWidgetItem,
+    QFileDialog,
     QMainWindow,
     QMenu,
-    QPushButton,
-    QFileDialog,
+    QMessageBox,
+    QSizePolicy,
     QStackedWidget,
     QStatusBar,
     QToolBar,
     QToolButton,
-    QVBoxLayout,
     QWidget,
 )
 
+from .. import theme_mode
 from ..adapter import (
     build_form_idl,
     generate_template_text,
@@ -39,10 +33,9 @@ from ..adapter import (
 from ..adapter.tasks import EngineTask
 from ..i18n import tr, translator
 from ..icons import icon
-from ..project import PyitolProject, Unit, load_project, save_project
 from ..paths import writable_target
+from ..project import PyitolProject, Unit, load_project, save_project
 from ..theme import TOOLBAR_ICON
-from .. import theme_mode
 from .command_palette import (
     KIND_COMMAND,
     KIND_TYPE,
@@ -438,6 +431,7 @@ class MainWindow(QMainWindow):
             for (mode, label_key), act in zip(
                 (("system", "theme.system"), ("dark", "theme.dark"), ("light", "theme.light")),
                 self._theme_menu.actions(),
+                strict=False,
             ):
                 act.setText(tr(label_key))
                 act.setChecked(
@@ -531,7 +525,7 @@ class MainWindow(QMainWindow):
         box.setWindowTitle(tr("app.unsaved_title"))
         box.setText(tr("app.unsaved_msg"))
         save = box.addButton(tr("app.unsaved_save"), QMessageBox.ButtonRole.AcceptRole)
-        discard = box.addButton(tr("app.unsaved_discard"), QMessageBox.ButtonRole.DestructiveRole)
+        box.addButton(tr("app.unsaved_discard"), QMessageBox.ButtonRole.DestructiveRole)
         cancel = box.addButton(tr("app.unsaved_cancel"), QMessageBox.ButtonRole.RejectRole)
         box.setDefaultButton(save)
         box.exec()

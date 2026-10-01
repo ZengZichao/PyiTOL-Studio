@@ -26,7 +26,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..i18n import tr
-from ..icons import icon, icon_pixmap
+from ..icons import icon_pixmap
 from ..project import load_project
 from ..theme import (
     FONT_SIZE,
@@ -330,7 +330,7 @@ class WelcomePage(QWidget):
         self.drop_template.setText(tr("welcome.drop_template"))
         self.drop_suffix.setText(tr("welcome.drop_suffix"))
         self.logo.setPixmap(icon_pixmap("folder-tree", 40, theme_color("on_accent")))
-        for card, icon_name, text_key, hint_key in self._cards:
+        for card, _, text_key, _ in self._cards:
             name_label = card.findChild(QLabel, "cardName")
             if name_label is not None:
                 name_label.setText(tr(text_key))

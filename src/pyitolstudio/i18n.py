@@ -199,7 +199,10 @@ _ZH: dict[str, str] = {
     "wizard.step4_sub": "核对文本并保存文件",
     "wizard.params_hint": "改一个字段，左边表格里的值会跟着变",
     "wizard.params_summary_title": "这一步只调样式",
-    "wizard.params_summary_body": "数据列与映射已在第 2 步设定；这一步改色宽图例等外观。iTOL 的最终渲染效果以 iTOL 端为准。",
+    "wizard.params_summary_body": (
+        "数据列与映射已在第 2 步设定；这一步改色宽图例等外观。"
+        "iTOL 的最终渲染效果以 iTOL 端为准。"
+    ),
     "wizard.column_info": "列结构：{}",
     "wizard.column_info_none": "列结构：—",
     "wizard.separator": "分隔符：",
@@ -217,7 +220,10 @@ _ZH: dict[str, str] = {
     "wizard.read_failed": "读取失败：{}",
     "wizard.bad_columns": "列结构与所选类型不符，无法生成模板：请返回第 2 步核对列数。",
     "wizard.bad_path": "导出被拒绝：目标路径包含 .. 穿越段。",
-    "wizard.sep_conflict": "# 数据中存在与分隔符 {!r} 冲突的单元格：\n# iTOL 模板不支持引号转义，请清理数据或更换分隔符后重试",
+    "wizard.sep_conflict": (
+        "# 数据中存在与分隔符 {!r} 冲突的单元格：\n"
+        "# iTOL 模板不支持引号转义，请清理数据或更换分隔符后重试"
+    ),
     "wizard.sep_tooltip": "iTOL 官方规则：SEPARATOR 行恒写作 “SEPARATOR 名称”（单个空格）；此处选择数据列使用的分隔符",
     "wizard.dynamic_hint": "等 动态列 {} 由粘贴数据自动扩展",
 
@@ -460,8 +466,14 @@ _EN: dict[str, str] = {
     "wizard.read_failed": "Read failed: {}",
     "wizard.bad_columns": "The column layout does not match the chosen type — go back to step 2 and fix the columns.",
     "wizard.bad_path": "Export refused: the path contains a .. segment.",
-    "wizard.sep_conflict": "# Data contains a cell conflicting with separator {!r}:\n# iTOL templates do not support quote-escaping — clean the data or switch separator",
-    "wizard.sep_tooltip": "iTOL rule: the SEPARATOR line is always written as \"SEPARATOR NAME\" (single space); this selects the separator used in data columns",
+    "wizard.sep_conflict": (
+        "# Data contains a cell conflicting with separator {!r}:\n"
+        "# iTOL templates do not support quote-escaping — clean the data or switch separator"
+    ),
+    "wizard.sep_tooltip": (
+        "iTOL rule: the SEPARATOR line is always written as \"SEPARATOR NAME\" (single space); "
+        "this selects the separator used in data columns"
+    ),
     "wizard.step1_label": "Pick a type",
     "wizard.step2_label": "Import data",
     "wizard.step2_sub": "Paste or import a table",
@@ -471,7 +483,10 @@ _EN: dict[str, str] = {
     "wizard.step4_sub": "Verify the text and save",
     "wizard.params_hint": "Change a field — the data table on the left stays in sync",
     "wizard.params_summary_title": "This step is about styling",
-    "wizard.params_summary_body": "Columns and data mapping were set in step 2; here you adjust widths, colours and legends. The final render lives on iTOL.",
+    "wizard.params_summary_body": (
+        "Columns and data mapping were set in step 2; here you adjust widths, colours and "
+        "legends. The final render lives on iTOL."
+    ),
     "wizard.type_search_hint": "Search types by name, e.g. heatmap, color strip…",
     "wizard.group_basic": "Basic",
     "wizard.group_basic_desc": "Everyday classification and single-value marks",

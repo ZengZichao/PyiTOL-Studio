@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
-from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QKeyEvent, QKeySequence, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
@@ -46,10 +46,8 @@ from ..i18n import tr, translator
 from ..icons import icon, icon_pixmap
 from ..tables import columns_acceptable
 from ..theme import (
-    FONT_SIZE_CAPTION,
     FONT_SIZE_MONO,
     MONO_FAMILIES,
-    RADIUS_S,
     SPACE_2,
     SPACE_3,
     SPACE_4,
@@ -127,7 +125,10 @@ def _subgroup(type_name: str) -> str:
 
 
 TYPE_DESCRIPTIONS = {
-    "dataset_colorstrip": ("按分组为每个叶节点着色，最常用的分类注释", "Color leaves by category — the everyday classification"),
+    "dataset_colorstrip": (
+        "按分组为每个叶节点着色，最常用的分类注释",
+        "Color leaves by category — the everyday classification",
+    ),
     "dataset_simple_bar": ("单值条形图，展示连续数值大小", "Single-value bars for continuous magnitudes"),
     "dataset_multibar": ("每个叶节点多列并列柱状图", "Stacked bars per leaf for grouped magnitudes"),
     "dataset_heatmap": ("多列数值矩阵，按色阶映射为热图", "Multi-column numeric matrix mapped to a colour ramp"),
@@ -376,7 +377,6 @@ class TypeCard(_LayoutSizeHintButton):
         # The description wraps, so the card must report height-for-width —
         # otherwise a two-line description clips at the 92px minimum
         # (UI review: button text must never truncate).
-        from PySide6.QtWidgets import QSizePolicy
 
         policy = self.sizePolicy()
         policy.setHeightForWidth(True)

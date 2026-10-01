@@ -270,7 +270,9 @@ class UploadDialog(QDialog):
         ]
 
     def _add_templates(self) -> None:
-        paths, _ = QFileDialog.getOpenFileNames(self, tr("fd.select_templates"), os.path.expanduser("~"), tr("fd.filter_template"))
+        paths, _ = QFileDialog.getOpenFileNames(
+            self, tr("fd.select_templates"), os.path.expanduser("~"), tr("fd.filter_template")
+        )
         for path in paths:
             safe = _normalize_dialog_path(path)
             if safe and safe not in self.template_paths:
@@ -283,7 +285,9 @@ class UploadDialog(QDialog):
             self.template_list.takeItem(self.template_list.row(item))
 
     def _browse_output_dir(self) -> None:
-        path = QFileDialog.getExistingDirectory(self, tr("fd.select_output_dir"), self.out_edit.text().strip() or os.path.expanduser("~"))
+        path = QFileDialog.getExistingDirectory(
+            self, tr("fd.select_output_dir"), self.out_edit.text().strip() or os.path.expanduser("~")
+        )
         safe = _normalize_dialog_path(path)
         if safe:
             self.out_edit.setText(safe)

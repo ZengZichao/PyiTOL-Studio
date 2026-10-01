@@ -50,3 +50,11 @@ pyitolstudio = ["resources/*.json", "resources/icons/*.svg"]
 pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+# 中文注释/文案密集，88 列对 CJK 过窄；仓库按 120 列维护，CI 与此配置保持单一来源。
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I"]

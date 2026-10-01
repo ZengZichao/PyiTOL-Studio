@@ -40,7 +40,7 @@ def test_non_wizard_types_need_no_catalog_entry():
     """The only registry types allowed to lack a catalog entry are the two
     NON_WIZARD_TYPES (they never render a wizard form)."""
     from pyitolstudio.adapter.form_idl import load_catalog
-    from pyitolstudio.adapter.registry import NON_WIZARD_TYPES, list_template_types
+    from pyitolstudio.adapter.registry import list_template_types
 
     catalog_types = set(load_catalog().get("types", {}))
     registry_types = {i.type_name for i in list_template_types() if i.wizard_supported}
@@ -54,8 +54,8 @@ def test_non_wizard_types_need_no_catalog_entry():
 # ---------------------------------------------------------------------------
 def test_wizard_type_tables_cover_the_registry():
     from pyitolstudio.adapter.registry import list_template_types
-    from pyitolstudio.app.unit_list import TYPE_ICONS
     from pyitolstudio.app import wizard
+    from pyitolstudio.app.unit_list import TYPE_ICONS
 
     supported = {i.type_name for i in list_template_types() if i.wizard_supported}
     # Glyph/icon map is single-sourced and must contain the real plural name.
@@ -116,9 +116,10 @@ def test_new_project_clears_leaf_ids(qtbot):
 # ---------------------------------------------------------------------------
 def test_appended_empty_row_is_not_counted_unmatched(qtbot):
     import pandas as pd
+
     from pyitolstudio.adapter import build_form_idl
-    from pyitolstudio.app.table_editor import DataEditorPage
     from pyitolstudio.app.preview import TemplatePreview
+    from pyitolstudio.app.table_editor import DataEditorPage
 
     page = DataEditorPage(TemplatePreview())
     qtbot.addWidget(page)

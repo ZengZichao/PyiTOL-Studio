@@ -86,7 +86,18 @@ jobs:
       - name: Smoke test the bundle
         env:
           PYITOLSTUDIO_SMOKE: "1"
-        run: "dist/PyiTOL Studio.app/Contents/MacOS/PyiTOL Studio"
+        # app 名含空格，必须加引号；此前 shell 把 "dist/PyiTOL Studio.app/..."
+        # 按空格切成 "dist/PyiTOL" + "Studio.app/..."，报
+        #   dist/PyiTOL: No such file or directory
+        # smoke 模式走 main._smoke()，内部是一串 assert，失败时以非 0 退出。
+        run: |
+          set -uo pipefail
+          APP="dist/PyiTOL Studio.app"
+          test -d "$APP" || { echo "::error::未产出 $APP"; ls -la dist/ || true; exit 1; }
+          "$APP/Contents/MacOS/PyiTOL Studio"
+          rc=$?
+          echo "smoke test exit code: $rc"
+          exit $rc
       - uses: actions/upload-artifact@v4
         with:
           name: PyiTOL-Studio-macos

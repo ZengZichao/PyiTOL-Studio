@@ -17,7 +17,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from PySide6.QtCore import QEvent, QModelIndex, QPoint, QRect, QRectF, QSize, Qt, Signal
-from PySide6.QtGui import QFont, QFontMetrics, QPainter, QPainterPath
+from PySide6.QtGui import QFontMetrics, QPainter, QPainterPath
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -35,7 +35,7 @@ from PySide6.QtWidgets import (
 
 from ..i18n import tr
 from ..icons import icon, icon_pixmap
-from ..theme import FONT_SIZE_MONO, MONO_FAMILIES, RADIUS_M, SPACE_2, SPACE_3, SPACE_4
+from ..theme import FONT_SIZE_MONO, RADIUS_M, SPACE_2, SPACE_3, SPACE_4
 from ..theme_mode import qcolor, theme_color, theme_qcolor
 
 # Item roles
@@ -236,7 +236,6 @@ class UnitRowDelegate(QStyledItemDelegate):
         }
 
     def paint(self, painter: QPainter, option, index: QModelIndex) -> None:  # noqa: N802
-        unit_id = index.data(UNIT_ID_ROLE)
         hidden = bool(index.data(UNIT_HIDDEN_ROLE))
         color = str(index.data(UNIT_COLOR_ROLE) or "")
         type_name = str(index.data(UNIT_TYPE_ROLE) or "")

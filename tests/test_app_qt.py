@@ -96,7 +96,7 @@ def test_wizard_step_rail_rows_do_not_overlap(qtbot):
         "step row collapsed to one line"
     )
 
-    for prev, nxt in zip(buttons, buttons[1:]):
+    for prev, nxt in zip(buttons, buttons[1:], strict=False):
         assert nxt.geometry().top() >= prev.geometry().bottom(), (
             f"step rows overlap: {prev._title_label.text()} / {nxt._title_label.text()}"
         )
@@ -149,9 +149,8 @@ def test_upload_dialog_reports_validation_inline(qtbot):
     """Errors are presented inline — never a modal that interrupts (§5.3)."""
     from pathlib import Path
 
-    from pyitolstudio.i18n import tr
-
     from pyitolstudio.app.dialogs import UploadDialog
+    from pyitolstudio.i18n import tr
 
     dialog = UploadDialog("/tmp/tree.nwk", ["/tmp/a.txt"], "", None)
     qtbot.addWidget(dialog)
@@ -505,13 +504,19 @@ def test_main_window_pushes_unit_context_and_validation(qtbot, fixtures_dir):
 # ---------------------------------------------------------------------------
 # Center pane data grid (design book §9.2)
 # ---------------------------------------------------------------------------
-def _grid_page(qtbot, type_name: str = "dataset_colorstrip", valid_ids={"A"}):
+_UNSET = object()
+
+
+def _grid_page(qtbot, type_name: str = "dataset_colorstrip", valid_ids=_UNSET):
     import pandas as pd
     from PySide6.QtCore import Qt  # noqa: F401  (documented in the module)
 
     from pyitolstudio.adapter import build_form_idl
     from pyitolstudio.app.preview import TemplatePreview
     from pyitolstudio.app.table_editor import DataEditorPage
+
+    if valid_ids is _UNSET:
+        valid_ids = {"A"}
 
     page = DataEditorPage(TemplatePreview())
     qtbot.addWidget(page)
@@ -919,7 +924,7 @@ def test_wizard_selects_and_advances_when_a_type_is_picked(qtbot, fixtures_dir):
 
 
 def test_wizard_steps_rail_only_enables_visited_pages(qtbot):
-    from pyitolstudio.app.wizard import PAGE_TYPE, TemplateWizard
+    from pyitolstudio.app.wizard import TemplateWizard
 
     wizard = TemplateWizard()
     qtbot.addWidget(wizard)

@@ -8,10 +8,10 @@ seconds, and is dismissed on click.
 
 from __future__ import annotations
 
-from PySide6.QtCore import QEvent, QTimer, Qt
+from PySide6.QtCore import QEvent, Qt, QTimer
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QWidget
 
-from ..icons import icon, icon_pixmap
+from ..icons import icon_pixmap
 from ..theme import SPACE_3
 from ..theme_mode import theme_color
 

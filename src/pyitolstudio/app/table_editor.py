@@ -73,6 +73,11 @@ STATUS_MATCHED = "matched"
 STATUS_MISSING = "missing"
 STATUS_UNCHECKED = "unchecked"
 
+# Shared invalid-model-index sentinel for Qt model-API default arguments
+# (calling ``QModelIndex()`` per call in a default is both wasteful and a
+# bugbear B008 hit; the default-constructed index is immutable and reusable).
+_INVALID_INDEX = QModelIndex()
+
 # View columns
 COL_ROW_NUMBER = 0
 
@@ -148,10 +153,10 @@ class DataTableModel(QAbstractTableModel):
         self._editable = True
 
     # -- Qt model API ---------------------------------------------------
-    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:  # noqa: N802
+    def rowCount(self, parent: QModelIndex = _INVALID_INDEX) -> int:  # noqa: N802
         return 0 if parent.isValid() else len(self._frame)
 
-    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:  # noqa: N802
+    def columnCount(self, parent: QModelIndex = _INVALID_INDEX) -> int:  # noqa: N802
         return 0 if parent.isValid() else len(self._columns) + 2
 
     @property
@@ -378,7 +383,7 @@ class DataTableModel(QAbstractTableModel):
         if self._frame.empty:
             return []
         return [
-            {str(col): ("" if pd.isna(val) else str(val)) for col, val in zip(self._columns, row)}
+            {str(col): ("" if pd.isna(val) else str(val)) for col, val in zip(self._columns, row, strict=False)}
             for row in self._frame.itertuples(index=False, name=None)
         ]
 
@@ -423,7 +428,7 @@ class DataTableModel(QAbstractTableModel):
         if not rows:
             return
         keys = self._pasted_keys(len(rows[0]))
-        records = [dict(zip(keys, row)) for row in rows]
+        records = [dict(zip(keys, row, strict=False)) for row in rows]
         self.beginResetModel()
         self._frame = pd.DataFrame(records, columns=keys)
         self._columns = keys

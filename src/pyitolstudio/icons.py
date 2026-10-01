@@ -20,11 +20,9 @@ from __future__ import annotations
 import os
 import sys
 from functools import lru_cache
-from xml.etree import ElementTree as ET
 
-from PySide6.QtCore import QByteArray, QRect, QRectF, QSize, Qt
+from PySide6.QtCore import QByteArray, QRectF, QSize, Qt
 from PySide6.QtGui import (
-    QColor,
     QIcon,
     QPainter,
     QPixmap,

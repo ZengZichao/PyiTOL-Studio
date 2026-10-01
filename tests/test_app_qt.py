@@ -65,6 +65,8 @@ def test_wizard_step_rail_rows_do_not_overlap(qtbot):
     two-line step rows collapsed to one bare line and the labels spilled
     onto the neighbouring steps. The rail must reserve a full row per step
     and the rows must not intersect."""
+    from PySide6.QtWidgets import QLabel
+
     from pyitolstudio.app.wizard import WizardSteps
 
     rail = WizardSteps()

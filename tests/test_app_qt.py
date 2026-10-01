@@ -73,7 +73,27 @@ def test_wizard_step_rail_rows_do_not_overlap(qtbot):
     rail.show()
     buttons = rail._buttons
     assert len(buttons) == 4
-    assert buttons[0].sizeHint().height() >= 48, "step row collapsed to one line"
+
+    # The size hint must cover the *content* of a two-line row, not a bare
+    # QPushButton line. Comparing against a single-line QLabel's height
+    # expresses that directly and stays valid across platforms: Qt's font
+    # metrics differ per runner (a 22px badge + two labels measures 48px on
+    # a local macOS, but 44px on the GitHub ubuntu runner and 46px on
+    # macos-latest), so any hard-coded pixel threshold is flaky.
+    first = buttons[0]
+    layout = first.layout()
+    margins = layout.contentsMargins()
+    content = layout.itemAt(0).layout().totalSizeHint().height()
+    assert first.sizeHint().height() >= content + margins.top() + margins.bottom(), (
+        "step row collapsed to one line: size hint does not cover its content"
+    )
+    # And it must be materially taller than a single bare text line, which is
+    # what a sizeHint-ignores-layout regression looks like.
+    single_line = QLabel(first._title).sizeHint().height()
+    assert first.sizeHint().height() >= single_line + margins.top() + margins.bottom(), (
+        "step row collapsed to one line"
+    )
+
     for prev, nxt in zip(buttons, buttons[1:]):
         assert nxt.geometry().top() >= prev.geometry().bottom(), (
             f"step rows overlap: {prev._title_label.text()} / {nxt._title_label.text()}"

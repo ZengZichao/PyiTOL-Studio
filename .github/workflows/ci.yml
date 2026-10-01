@@ -98,7 +98,7 @@ jobs:
           rc=$?
           echo "smoke test exit code: $rc"
           exit $rc
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: PyiTOL-Studio-macos
           path: dist/PyiTOL Studio.app

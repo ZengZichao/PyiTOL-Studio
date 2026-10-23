@@ -1,4 +1,8 @@
 # PyiTOL Studio / iTOL 注释桌面工作台
+[![CI](https://github.com/ZengZichao/PyiTOL-Studio/actions/workflows/ci.yml/badge.svg)](https://github.com/ZengZichao/PyiTOL-Studio/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![ORCID](https://img.shields.io/badge/ORCID-0000--0001--6553--970X-a6ce39?logo=orcid&logoColor=white)](https://orcid.org/0000-0001-6553-970X)
 
 **PyiTOL Studio** 是 [PyiTOL](https://github.com/ZengZichao/PyiTOL) 的桌面伴侣：一个基于 PySide6 的 macOS GUI，用于可视化生成、编辑、反推和批量上传 iTOL 注释模板。
 

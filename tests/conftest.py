@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -36,3 +37,51 @@ def _no_blocking_message_boxes(monkeypatch):
     except Exception:  # noqa: BLE001 - PySide6 absent; nothing to patch
         return
     monkeypatch.setattr(QMessageBox, "exec", lambda self, *a, **k: 0)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _teardown_qt_before_interpreter_exit(request):
+    """Collect Qt objects while the interpreter can still run destructors.
+
+    A QApplication (or any widget leaked by a test) that survives until
+    interpreter finalisation aborts the process on some Linux PySide6 builds
+    -- ``Fatal Python error: none_dealloc`` during the final GC, after every
+    test has already passed, which destroys the exit code.  Close everything
+    and collect garbage here, while Qt is still alive.
+    """
+
+    def _fin():
+        import gc
+
+        try:
+            from PySide6 import QtWidgets
+        except Exception:  # noqa: BLE001 - PySide6 absent; nothing to tear down
+            return
+        app = QtWidgets.QApplication.instance()
+        if app is not None:
+            app.closeAllWindows()
+            app.processEvents()
+            app.quit()
+        gc.collect()
+
+    request.addfinalizer(_fin)
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_sessionfinish(session, exitstatus):
+    """End the process once results are reported, skipping interpreter teardown.
+
+    On Linux (PySide6 + Python 3.10/3.11), letting the interpreter finalise
+    with Qt objects still reachable aborts during the final garbage
+    collection -- ``Fatal Python error: none_dealloc`` -- *after* every test
+    has passed and pytest has already printed its summary, turning a green
+    run into exit 134.  All suites pass by this point; ``os._exit`` with
+    pytest's own exit status keeps the reported result without running the
+    teardown that crashes.
+    """
+    yield
+    try:
+        import PySide6  # noqa: F401
+    except ImportError:
+        return
+    os._exit(int(exitstatus))

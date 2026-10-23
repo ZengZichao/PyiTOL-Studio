@@ -64,3 +64,26 @@ def _teardown_qt_before_interpreter_exit(request):
         gc.collect()
 
     request.addfinalizer(_fin)
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_sessionfinish(session, exitstatus):
+    """End the process once results are reported, skipping interpreter teardown.
+
+    On Linux (PySide6 + Python 3.10/3.11), letting the interpreter finalise
+    with Qt objects still reachable aborts during the final garbage
+    collection -- ``Fatal Python error: none_dealloc`` -- *after* every test
+    has passed and pytest has already printed its summary, turning a green
+    run into exit 134.  All suites pass by this point; ``os._exit`` with
+    pytest's own exit status keeps the reported result without running the
+    teardown that crashes.
+    """
+    outcome = yield
+    try:
+        import PySide6  # noqa: F401
+
+        import os
+
+        os._exit(int(exitstatus))
+    except ImportError:
+        return

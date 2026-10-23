@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -78,12 +79,9 @@ def pytest_sessionfinish(session, exitstatus):
     pytest's own exit status keeps the reported result without running the
     teardown that crashes.
     """
-    outcome = yield
+    yield
     try:
         import PySide6  # noqa: F401
-
-        import os
-
-        os._exit(int(exitstatus))
     except ImportError:
         return
+    os._exit(int(exitstatus))

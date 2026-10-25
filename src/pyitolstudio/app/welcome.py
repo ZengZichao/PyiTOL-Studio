@@ -343,7 +343,7 @@ class WelcomePage(QWidget):
             f"{tr('welcome.drop_suffix')}"
         )
         self.logo.setPixmap(icon_pixmap("app-logo", 44, theme_color("text")))
-        for card, icon_name, text_key, hint_key in self._cards:
+        for card, _icon_name, text_key, _hint_key in self._cards:
             name_label = card.findChild(QLabel, "cardName")
             if name_label is not None:
                 name_label.setText(tr(text_key))

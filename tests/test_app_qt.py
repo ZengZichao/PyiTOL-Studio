@@ -64,15 +64,29 @@ def test_wizard_step_rail_rows_do_not_overlap(qtbot):
     """Regression: QPushButton::sizeHint ignores the embedded layout, so the
     two-line step rows collapsed to one bare line and the labels spilled
     onto the neighbouring steps. The rail must reserve a full row per step
-    and the rows must not intersect."""
-    from PySide6.QtWidgets import QLabel
+    and the rows must not intersect.
+
+    The geometry is only asserted once the layout has actually settled: a
+    bare ``show()`` leaves the first (pre-polish, default-font) pass on
+    screen, and reading geometry from that pass reported rows taller than
+    the pitch the settled layout assigns — an artefact of the harness, not
+    of the rail."""
+    from PySide6.QtWidgets import QApplication, QLabel
 
     from pyitolstudio.app.wizard import WizardSteps
+    from pyitolstudio.theme import build_stylesheet
 
+    # The rail's label metrics come from the app QSS (pixel sizes on
+    # #stepTitle / #stepSubtitle); measuring a bare widget exercises a
+    # pre-polish font pass the real app never runs.
+    QApplication.instance().setStyleSheet(build_stylesheet(True))
     rail = WizardSteps()
     qtbot.addWidget(rail)
     rail.resize(212, 400)
     rail.show()
+    QApplication.processEvents()
+    rail.layout().activate()
+    QApplication.processEvents()
     buttons = rail._buttons
     assert len(buttons) == 4
 

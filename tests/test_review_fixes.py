@@ -316,8 +316,10 @@ def _channel(c: int) -> float:
     return s / 12.92 if s <= 0.03928 else ((s + 0.055) / 1.055) ** 2.4
 
 
-def _rgba(spec: str) -> tuple[int, int, int, float]:
+def _rgba(spec: str | tuple) -> tuple[int, int, int, float]:
     """Parse a ``#rgb`` / ``#rrggbb`` / ``rgba(r,g,b,a)`` token into RGBA."""
+    if isinstance(spec, tuple):  # already-computed composite (opaque RGB)
+        return (*spec, 1.0) if len(spec) == 3 else spec
     text = spec.strip()
     if text.startswith("rgba"):
         nums = re.findall(r"[\d.]+", text)
@@ -359,17 +361,34 @@ def _contrast(fg_spec: str, bg_spec: str) -> float:
 
 
 def test_accent_link_is_aa_but_plain_accent_is_not():
-    """The fix moved small accent text onto accent_link; assert the new token
-    passes and the old one really was below AA (guards against re-introducing
-    the regression the DESIGN-NOTES claimed was already closed)."""
+    """Small accent text reads on ``accent_link``, never on the plain accent.
+
+    Under the green brand this asserted the negative (accent itself was
+    below AA on the tint). The Klein-blue accent is dark enough to pass AA
+    everywhere, so the invariant now takes the strict form that still
+    guards the original regression: accent_link is at least as legible as
+    plain accent on every background small accent text may sit on, and
+    both clear AA."""
     from pyitolstudio.theme import palette
 
-    light = palette(False)
-    for bg_token in ("panel", "panel_alt", "accent_soft"):
-        ratio = _contrast(light["accent_link"], light[bg_token])
-        assert ratio >= 4.5, f"accent_link on {bg_token}: {ratio:.2f}:1 < AA"
-    # The old choice was the bug — document it stays below AA on the tint.
-    assert _contrast(light["accent"], light["accent_soft"]) < 4.5
+    for dark in (False, True):
+        mode = palette(dark)
+        for bg_token in ("panel", "panel_alt"):
+            link_ratio = _contrast(mode["accent_link"], mode[bg_token])
+            accent_ratio = _contrast(mode["accent"], mode[bg_token])
+            assert link_ratio >= 4.5, (
+                f"accent_link on {bg_token} (dark={dark}): {link_ratio:.2f}:1 < AA"
+            )
+            assert link_ratio >= accent_ratio, (
+                f"accent_link must stay the safer small-text token on {bg_token} (dark={dark})"
+            )
+        # The tinted banner ground is accent_soft composited over the panel
+        # surface it actually paints on — white only in light mode.
+        banner = _over(_rgba(mode["accent_soft"]), _rgba(mode["panel"]))
+        link_ratio = _contrast(mode["accent_link"], banner)
+        accent_ratio = _contrast(mode["accent"], banner)
+        assert link_ratio >= 4.5, f"accent_link on banner (dark={dark}): {link_ratio:.2f}:1 < AA"
+        assert link_ratio >= accent_ratio
 
 
 def test_preview_comment_is_legible():
@@ -382,17 +401,25 @@ def test_preview_comment_is_legible():
 
 
 # ---------------------------------------------------------------------------
-# Theme-sync gate (UI P0-1) — the overflow button is re-rasterised on retheme
+# Theme-sync gate (UI P0-1) — every toolbar button is re-rasterised on retheme
 # ---------------------------------------------------------------------------
-def test_retheme_ui_reassigns_overflow_icon(qtbot):
+def test_retheme_ui_reassigns_toolbar_icons(qtbot):
+    """All toolbar actions — including the language/appearance switchers that
+    used to live in the overflow menu — must get fresh pixmaps on a theme
+    switch, otherwise a dark→light flip leaves stale dark-mode glyphs."""
     from PySide6.QtGui import QIcon
 
     from pyitolstudio.app.main_window import MainWindow
 
     win = MainWindow()
     qtbot.addWidget(win)
-    win._overflow_button.setIcon(QIcon())  # sentinel "stale" (empty) icon
-    assert win._overflow_button.icon().isNull()
+    for act in (*win._actions.values(), *win._pane_actions.values(),
+                win._lang_action, win._theme_action):
+        act.setIcon(QIcon())  # sentinel "stale" (empty) icon
+        assert act.icon().isNull()
     win.retheme_ui()
-    assert not win._overflow_button.icon().isNull(), \
-        "retheme_ui 未刷新溢出按钮图标（深→浅切换后会消失）"
+    for act in (*win._actions.values(), *win._pane_actions.values(),
+                win._lang_action, win._theme_action):
+        assert not act.icon().isNull(), (
+            f"retheme_ui 未刷新工具栏图标：{act.text()}"
+        )

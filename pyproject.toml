@@ -44,7 +44,11 @@ pyitol-studio = "pyitolstudio.app.main:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-pyitolstudio = ["resources/*.json", "resources/icons/*.svg"]
+pyitolstudio = [
+    "resources/*.json",
+    "resources/icons/*.svg",
+    "resources/samples/*",
+]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

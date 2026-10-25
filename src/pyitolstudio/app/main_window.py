@@ -57,6 +57,23 @@ SPLITTER_KEY = "ui/splitter_sizes"
 _DEFAULT_SPLITTER = [280, 700, 302]
 
 
+def _bundled_sample_dir() -> Path | None:
+    """Where the bundled example project lives, or None when absent.
+
+    Mirrors the resolution rule in ``icons.py``: under PyInstaller the
+    resources sit in ``_MEIPASS/pyitolstudio/resources``, in a source tree
+    the package root (this file's grandparent) already *is* ``pyitolstudio``.
+    """
+    import sys
+
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        candidate = Path(meipass) / "pyitolstudio" / "resources" / "samples"
+    else:
+        candidate = Path(__file__).resolve().parents[1] / "resources" / "samples"
+    return candidate if candidate.is_dir() else None
+
+
 def _mode_matches(mode: str) -> bool:
     """Whether the active override equals *mode* (``dark`` / ``light``)."""
     return theme_mode.override() == (mode == "dark")
@@ -135,6 +152,7 @@ class MainWindow(QMainWindow):
         self.welcome.new_project.connect(self.new_project)
         self.welcome.open_project.connect(self.open_project)
         self.welcome.browse_examples.connect(self.open_wizard)
+        self.welcome.open_example_project.connect(self.load_example_project)
         self.welcome.open_path.connect(self._open_project_path)
         self.editor.wizard_requested.connect(self.open_wizard)
         self.inspector.wizard_requested.connect(self.open_wizard)
@@ -190,20 +208,19 @@ class MainWindow(QMainWindow):
 
     # ------------------------------------------------------------------
     def _build_toolbar(self) -> None:
-        """One bar, three groups by intent, and an overflow for everything else.
+        """One bar, every action visible.
 
-        The bar used to carry fourteen equal-weight icons in a row behind two
-        1px separators: no hierarchy at all, and no way to tell which
-        operations actually matter without hovering each one in turn.  Only the
-        high-frequency actions keep a permanent slot now; the occasional ones
-        (preview refresh, upload, config) and the set-once ones (pane toggles,
-        language, theme) move into the overflow menu at the right edge
-        (UI review §04 ②).
+        The bar used to fold preview / upload / config, the pane toggles and
+        the language & appearance switchers into a right-edge overflow menu;
+        that hid half the controls behind one click (user request: these
+        buttons must sit on the surface, not collapse away).  Everything now
+        keeps a permanent slot: four left-aligned groups by intent, then a
+        spring, then the set-once cluster (pane toggles · language · theme)
+        pinned against the right edge.
         """
         toolbar = QToolBar("main")
         self.addToolBar(toolbar)
         self._toolbar = toolbar
-        self._overflow_menu = QMenu(self)
 
         # (action_key, icon_name, text_key, handler, shortcut)
         entries = [
@@ -230,21 +247,7 @@ class MainWindow(QMainWindow):
             self._actions[key] = act
             self._action_icons[key] = icon_name
 
-        # 文件 · 数据 — the two groups that earn a permanent slot.  Accent fills
-        # only the primary action, so `accent` stays unmistakable for "the main
-        # thing"; every other button stays neutral until hover.
-        for index, group in enumerate(
-            (["palette"], ["new", "open", "save"], ["wizard", "import", "export"])
-        ):
-            if index:
-                toolbar.addSeparator()
-            for key in group:
-                act = self._actions[key]
-                toolbar.addAction(act)
-                if key == "new":
-                    toolbar.widgetForAction(act).setObjectName("primaryTool")
-
-        # Pane toggles: set once per session, so they belong in the overflow.
+        # Pane toggles — checkable, and mirrored from the panel chevrons too.
         self._pane_actions: dict[str, QAction] = {}
         for pane, icon_name, text_key in (
             ("rail", "panel-left", "tb.toggle_rail"),
@@ -262,42 +265,50 @@ class MainWindow(QMainWindow):
             self._pane_actions[pane] = act
             self._action_icons[pane] = icon_name
 
-        for key in ("preview", "upload", "config"):
-            self._overflow_menu.addAction(self._actions[key])
-        self._overflow_menu.addSeparator()
+        # 文件 · 数据 — the four groups that earn a permanent slot.  Accent
+        # fills only the primary action, so `accent` stays unmistakable for
+        # "the main thing"; every other button stays neutral until hover.
+        for index, group in enumerate(
+            (["palette"], ["new", "open", "save"],
+             ["wizard", "import", "export"], ["preview", "upload", "config"])
+        ):
+            if index:
+                toolbar.addSeparator()
+            for key in group:
+                act = self._actions[key]
+                toolbar.addAction(act)
+                if key == "new":
+                    toolbar.widgetForAction(act).setObjectName("primaryTool")
+
+        # Set-once cluster against the right edge: pane toggles, then the
+        # language and appearance switchers (each a popup menu).
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        toolbar.addWidget(spacer)
+        toolbar.addSeparator()
         for pane in ("rail", "inspector"):
-            self._overflow_menu.addAction(self._pane_actions[pane])
-        self._overflow_menu.addSeparator()
+            toolbar.addAction(self._pane_actions[pane])
+        toolbar.addSeparator()
 
         # Language switcher (globe icon + menu).
         lang_action = QAction(icon("languages", TOOLBAR_ICON), tr("tb.language"), self)
         lang_action.setToolTip(tr("tb.language"))
         self._lang_action = lang_action
         self._action_icons["language"] = "languages"
+        toolbar.addAction(lang_action)
         # Appearance switcher (sun/moon icon + menu) — lets both modes be
         # verified without changing the OS setting.
         theme_action = QAction(icon("sun-moon", TOOLBAR_ICON), tr("tb.theme"), self)
         theme_action.setToolTip(tr("tb.theme"))
         self._theme_action = theme_action
         self._action_icons["theme"] = "sun-moon"
-        self._overflow_menu.addAction(lang_action)
-        self._overflow_menu.addAction(theme_action)
-
-        # Overflow button, pinned against the right edge.
-        spacer = QWidget()
-        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        toolbar.addWidget(spacer)
-        overflow = QToolButton()
-        overflow.setObjectName("iconButton")
-        overflow.setToolTip(tr("tb.more"))
-        overflow.setIcon(icon("ellipsis-vertical", TOOLBAR_ICON))
-        overflow.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        overflow.setMenu(self._overflow_menu)
-        toolbar.addWidget(overflow)
-        self._overflow_button = overflow
+        toolbar.addAction(theme_action)
 
         self._build_language_menu()
         self._build_theme_menu()
+        # Popups bind after the actions have toolbar buttons to configure.
+        self._bind_popup(self._lang_action)
+        self._bind_popup(self._theme_action)
 
     def _build_language_menu(self) -> None:
         menu = QMenu(self)
@@ -335,12 +346,8 @@ class MainWindow(QMainWindow):
         self._bind_popup(self._theme_action)
 
     def _bind_popup(self, action: QAction) -> None:
-        """Give an action's button the instant-popup arrow, when it has one.
-
-        Actions now live either on the bar or in the overflow menu; only the
-        former have a toolbar button to configure, and menu items get their
-        submenu arrow from the menu itself.
-        """
+        """Give an action's toolbar button the instant-popup arrow, when the
+        action has one on the bar (the language and theme switchers)."""
         button = self._toolbar.widgetForAction(action)
         if button is not None:
             button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -441,6 +448,16 @@ class MainWindow(QMainWindow):
         self.welcome.retranslate_ui()
         # Inspector header
         self.inspector.retranslate_ui()
+        # Catalog field labels are locale-dependent (bilingual parameter
+        # catalog); rebuild the current unit's form so a live switch flips
+        # the labels too.  Wrapped in the loading guard: a language switch
+        # is not a project edit and must not dirty the project.
+        if self.current_unit is not None:
+            self._loading_unit = True
+            try:
+                self._load_unit_body(self.current_unit)
+            finally:
+                self._loading_unit = False
         self._update_validation()
         # Left rail (tree card + unit list)
         self.rail.retranslate_ui()
@@ -449,9 +466,6 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage(tr("app.status_ready"))
         # Editor
         self.editor.retranslate_ui()
-        # Overflow button: not in _actions, so translate/label it explicitly.
-        self._overflow_button.setToolTip(tr("tb.more"))
-        self._overflow_button.setAccessibleName(tr("tb.more"))
 
     # ------------------------------------------------------------------
     def retheme_ui(self) -> None:
@@ -477,10 +491,6 @@ class MainWindow(QMainWindow):
         self.rail.retheme_ui()
         self.welcome.retheme_ui()
         self.editor.retheme_ui()
-        # The overflow button is not in _actions / _pane_actions, so it must be
-        # re-rasterised explicitly — otherwise its near-white glyph survives a
-        # dark→light switch and vanishes on the light toolbar (UI P0-1).
-        self._overflow_button.setIcon(icon("ellipsis-vertical", TOOLBAR_ICON))
 
     # ------------------------------------------------------------------
     def _status_path(self, key: str, path, *extra) -> None:
@@ -555,6 +565,41 @@ class MainWindow(QMainWindow):
         path, _ = QFileDialog.getOpenFileName(self, tr("fd.open_project"), "", tr("fd.filter_project"))
         if path:
             self._open_project_path(path)
+
+    def load_example_project(self) -> None:
+        """Load the bundled sample project (welcome page → 打开示例工程).
+
+        The sample ships inside the app resources, so it is treated as
+        read-only source material: ``_project_path`` stays unset and the
+        first save always asks where to put the user's own copy.
+        """
+        if not self._maybe_confirm_discard():
+            return
+        samples = _bundled_sample_dir()
+        project_file = samples / "example_project.pyitolproj" if samples else None
+        if project_file is None or not project_file.is_file():
+            self.status_bar.showMessage(tr("app.status_example_missing"))
+            return
+        try:
+            self.project = load_project(project_file)
+        except (ValueError, OSError) as exc:
+            self.status_bar.showMessage(tr("app.status_open_failed", exc))
+            return
+        self._hidden_units.clear()
+        self._reset_project_context()
+        self._reset_unit_selection()
+        self._project_path = None
+        self._refresh_nav()
+        self.center_stack.setCurrentWidget(self.editor)
+        self._set_dirty(False)
+        tree = samples / "example_tree.nwk"
+        if tree.is_file():
+            self._set_tree_path(str(tree))
+        # Select the first unit so the sample demonstrates itself: the editor,
+        # inspector and preview all light up without a further click.
+        if self.project.units:
+            self.unit_list.select_unit(self.project.units[0].unit_id)
+        self.status_bar.showMessage(tr("app.status_example_loaded"))
 
     def _open_project_path(self, path: str) -> None:
         if not self._maybe_confirm_discard():

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyitol-studio"
-version = "0.1.0"
+version = "0.2.0"
 description = "PyiTOL Studio — Desktop companion for iTOL annotation (macOS GUI for the pyitol engine)"
 readme = "README.md"
 requires-python = ">=3.10"

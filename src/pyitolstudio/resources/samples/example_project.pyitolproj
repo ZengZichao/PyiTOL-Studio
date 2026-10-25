@@ -1,0 +1,144 @@
+{
+  "pyitolproj_version": 1,
+  "name": "Example Project",
+  "tree_path": "",
+  "units": [
+    {
+      "unit_id": "7112413a6e5d",
+      "type_name": "dataset_colorstrip",
+      "label": "Genome assembly status",
+      "color": "#2e5cff",
+      "separator": "TAB",
+      "columns": [
+        "id",
+        "value",
+        "color"
+      ],
+      "data_rows": [
+        {
+          "id": "Ailuropoda",
+          "value": "1",
+          "color": "#2e5cff"
+        },
+        {
+          "id": "Homo_sapiens",
+          "value": "2",
+          "color": "#002fa7"
+        },
+        {
+          "id": "Mus_musculus",
+          "value": "4",
+          "color": "#8aa4ff"
+        },
+        {
+          "id": "Rattus_norvegicus",
+          "value": "8",
+          "color": "#5a6472"
+        },
+        {
+          "id": "Danio_rerio",
+          "value": "1",
+          "color": "#9aa5b4"
+        },
+        {
+          "id": "Drosophila",
+          "value": "2",
+          "color": "#0a0a0c"
+        },
+        {
+          "id": "Arabidopsis",
+          "value": "4",
+          "color": "#e6e9ee"
+        },
+        {
+          "id": "Oryza_sativa",
+          "value": "8",
+          "color": "#4d74ff"
+        }
+      ],
+      "parameters": {
+        "COLOR_BRANCHES": "1"
+      },
+      "legend": {},
+      "source": "manual"
+    },
+    {
+      "unit_id": "5a2567a97c50",
+      "type_name": "dataset_heatmap",
+      "label": "Genome traits",
+      "color": "#002fa7",
+      "separator": "TAB",
+      "columns": [
+        "id",
+        "GC",
+        "LEN",
+        "EXPR",
+        "DIV"
+      ],
+      "data_rows": [
+        {
+          "id": "Ailuropoda",
+          "GC": "0.40",
+          "LEN": "0.10",
+          "EXPR": "0.20",
+          "DIV": "0.02"
+        },
+        {
+          "id": "Homo_sapiens",
+          "GC": "0.61",
+          "LEN": "0.70",
+          "EXPR": "0.90",
+          "DIV": "0.08"
+        },
+        {
+          "id": "Mus_musculus",
+          "GC": "0.40",
+          "LEN": "0.34",
+          "EXPR": "0.80",
+          "DIV": "0.14"
+        },
+        {
+          "id": "Rattus_norvegicus",
+          "GC": "0.61",
+          "LEN": "0.94",
+          "EXPR": "0.70",
+          "DIV": "0.20"
+        },
+        {
+          "id": "Danio_rerio",
+          "GC": "0.40",
+          "LEN": "0.58",
+          "EXPR": "0.60",
+          "DIV": "0.26"
+        },
+        {
+          "id": "Drosophila",
+          "GC": "0.61",
+          "LEN": "0.22",
+          "EXPR": "0.50",
+          "DIV": "0.05"
+        },
+        {
+          "id": "Arabidopsis",
+          "GC": "0.40",
+          "LEN": "0.82",
+          "EXPR": "0.40",
+          "DIV": "0.11"
+        },
+        {
+          "id": "Oryza_sativa",
+          "GC": "0.61",
+          "LEN": "0.46",
+          "EXPR": "0.30",
+          "DIV": "0.17"
+        }
+      ],
+      "parameters": {
+        "COLOR_MIN": "#f2f2f2",
+        "COLOR_MAX": "#002fa7"
+      },
+      "legend": {},
+      "source": "manual"
+    }
+  ]
+}

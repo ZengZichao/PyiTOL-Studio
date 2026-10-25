@@ -49,6 +49,8 @@ _ZH: dict[str, str] = {
     "app.unsaved_cancel": "取消",
     "app.status_bad_path": "路径无效：目标包含 .. 穿越段，已拒绝",
     "app.status_wizard_added": "向导已生成并加入工程：{}",
+    "app.status_example_loaded": "示例工程已载入（可另存为副本后继续编辑）",
+    "app.status_example_missing": "示例工程缺失：随包资源不完整",
 
     # — welcome page —
     "welcome.new_project": "新建工程",
@@ -57,6 +59,7 @@ _ZH: dict[str, str] = {
     "welcome.open_project_desc": "继续编辑 .pyitolproj，恢复全部注释单元",
     "welcome.examples": "模板向导",
     "welcome.examples_desc": "从 31 种官方类型分步新建一个注释模板",
+    "welcome.open_example": "打开示例工程",
     "welcome.key_new": "⌘N",
     "welcome.key_open": "⌘O",
     "welcome.recent": "最近工程",
@@ -317,6 +320,8 @@ _EN: dict[str, str] = {
     "app.unsaved_cancel": "Cancel",
     "app.status_bad_path": "Invalid path: target contains a .. segment — refused",
     "app.status_wizard_added": "Wizard generated and added to the project: {}",
+    "app.status_example_loaded": "Example project loaded — save a copy to keep editing it",
+    "app.status_example_missing": "Example project missing — bundled resources incomplete",
 
     # — welcome page —
     "welcome.new_project": "New Project",
@@ -325,6 +330,7 @@ _EN: dict[str, str] = {
     "welcome.open_project_desc": "Keep editing a .pyitolproj — every annotation unit is restored",
     "welcome.examples": "Template Wizard",
     "welcome.examples_desc": "Build a new annotation template step by step from the 31 official types",
+    "welcome.open_example": "Open the Example Project",
     "welcome.key_new": "⌘N",
     "welcome.key_open": "⌘O",
     "welcome.recent": "Recent Projects",
@@ -557,8 +563,9 @@ _EN: dict[str, str] = {
 
 _TABLES: dict[str, dict[str, str]] = {"zh": _ZH, "en": _EN}
 
-# Fallback to Chinese for unknown locales.
-_DEFAULT_LOCALE = "zh"
+# English is the default UI language (user request: 软件打开默认英文界面);
+# a saved QSettings choice still wins via :meth:`Translator.load_saved`.
+_DEFAULT_LOCALE = "en"
 _SETTINGS_KEY = "ui/language"
 
 

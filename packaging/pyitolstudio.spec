@@ -60,6 +60,7 @@ a = Analysis(
     datas=[
         (_p("src", "pyitolstudio", "resources", "*.json"), "pyitolstudio/resources"),
         (_p("src", "pyitolstudio", "resources", "icons", "*.svg"), "pyitolstudio/resources/icons"),
+        (_p("src", "pyitolstudio", "resources", "samples", "*"), "pyitolstudio/resources/samples"),
         (_p("design", "PyiTOL-Studio-视觉稿.html"), "design"),
     ],
     hiddenimports=[

@@ -228,20 +228,46 @@ def _spec_from_entry(key: str, entry: dict[str, Any]) -> FieldSpec:
         widget = "text"
     minimum = entry.get("min")
     maximum = entry.get("max")
+    label, help_text, choice_labels = _localized_text(key, entry)
     return FieldSpec(
         key=key,
-        label=entry.get("label", key),
+        label=label,
         widget=widget,
         default=entry.get("default", ""),
         choices=tuple(str(c) for c in entry.get("choices", ())),
-        choice_labels=tuple(entry.get("choice_labels", ())),
+        choice_labels=choice_labels,
         minimum=None if minimum is None else float(minimum),
         maximum=None if maximum is None else float(maximum),
-        help_text=entry.get("help", ""),
+        help_text=help_text,
         group=group_for(key),
         unit=_FIELD_UNITS.get(key, ""),
         hint=_FIELD_HINTS.get(key, ""),
     )
+
+
+def _localized_text(key: str, entry: dict[str, Any]) -> tuple[str, str, tuple[str, ...]]:
+    """Field copy for the active UI locale.
+
+    The bundled catalog is bilingual (Chinese primary, ``label_en`` /
+    ``help_en`` / ``choice_labels_en`` added by ``scripts/translate_catalog.py``);
+    English is the default UI language, so the ``*_en`` variant wins when the
+    locale is ``en`` and is present.  i18n is imported lazily: this module is
+    part of the Qt-free adapter layer's import graph and must not pull PySide6
+    at module import time.
+    """
+    from ..i18n import translator  # noqa: PLC0415
+
+    english = translator().locale == "en"
+    label = entry.get("label", key)
+    help_text = entry.get("help", "")
+    choice_labels = tuple(entry.get("choice_labels", ()))
+    if english:
+        label = entry.get("label_en") or label
+        help_text = entry.get("help_en") or help_text
+        en_choices = entry.get("choice_labels_en")
+        if en_choices:
+            choice_labels = tuple(en_choices)
+    return label, help_text, choice_labels
 
 
 def build_form_idl(type_name: str) -> dict[str, Any]:
@@ -256,11 +282,14 @@ def build_form_idl(type_name: str) -> dict[str, Any]:
     catalog = load_catalog()
     catalog_types = catalog.get("types", {})
     entry = catalog_types.get(type_name)
+    from ..i18n import translator  # noqa: PLC0415
+
+    english = translator().locale == "en"
     if entry is None:
         entry = {
             "fields": catalog.get("fallback", {}).get("fields", []),
             "data_columns": ["id"],
-            "data_column_labels": ["树 ID"],
+            "data_column_labels": ["Tree ID"] if english else ["树 ID"],
         }
 
     fields: list[FieldSpec] = []
@@ -303,7 +332,10 @@ def build_form_idl(type_name: str) -> dict[str, Any]:
             if any(f["group"] == group_key for f in field_dicts)
         ],
         "data_columns": list(entry.get("data_columns", ["id"])),
-        "data_column_labels": list(entry.get("data_column_labels", ["树 ID"])),
+        "data_column_labels": list(
+            (entry.get("data_column_labels_en") if english else None)
+            or entry.get("data_column_labels", ["Tree ID"] if english else ["树 ID"])
+        ),
         "data_columns_dynamic": entry.get("data_columns_dynamic"),
     }
 

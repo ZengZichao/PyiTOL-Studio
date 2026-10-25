@@ -9,8 +9,9 @@ Dark and light are **both first-class modes**: every token exists in both
 dictionaries and the two sets are maintained side by side — there is no
 "dark first, light later" fallback.  Two consequences worth repeating:
 
-* the brand colour is two different hex values (dark ``#35e0a1`` /
-  light ``#0e9c68``) — one value cannot be right on both grounds;
+* the brand colour is two different hex values (dark ``#2e5cff`` /
+  light ``#002fa7`` — the Klein blue hue in two values) — one value cannot
+  be right on both grounds;
 * the semantic and data-visualisation colours are a full step darker in
   light mode, because the dark set was brightened for a dark ground.
 
@@ -128,9 +129,13 @@ TOOLBAR_ICON = 18  # toolbar glyph size (was 16 — too small next to 13px text)
 
 # ---------------------------------------------------------------------------
 # Brand colour — two values, one per mode.  Do not merge them.
+# Both are Klein blue (Internationaal Klein Blauw, #002FA7 hue): the light
+# mode wears the pigment verbatim, the dark mode the same hue lifted to a
+# value that clears 4.5:1 against the near-black ground.  Everything else in
+# the UI is black / white / grey — accent is the single drop of colour.
 # ---------------------------------------------------------------------------
-ACCENT_LIGHT = "#0e9c68"
-ACCENT_DARK = "#35e0a1"
+ACCENT_LIGHT = "#002fa7"  # International Klein Blue
+ACCENT_DARK = "#2e5cff"  # Klein hue, lifted for the dark ground
 
 # ---------------------------------------------------------------------------
 # Dark mode (default) — design book §4.1–§4.2
@@ -156,14 +161,14 @@ _DARK = {
     "text_disabled": "#4a5361",
     # — brand —
     "accent": ACCENT_DARK,
-    "accent_hi": "#4ff0b1",
-    "accent_lo": "#22c98c",
-    "accent_soft": "rgba(53,224,161,.12)",
-    "accent_line": "rgba(53,224,161,.34)",
-    "on_accent": "#04160e",
-    "accent_text": "#04160e",  # v1.0 alias of on_accent
-    "accent_link": ACCENT_DARK,  # accent used as small text/link (≥4.5:1 on bg)
-    "sel_bg": "rgba(53,224,161,.12)",  # v1.0 alias of accent_soft
+    "accent_hi": "#4d74ff",
+    "accent_lo": "#2147d6",
+    "accent_soft": "rgba(46,92,255,.14)",
+    "accent_line": "rgba(46,92,255,.38)",
+    "on_accent": "#ffffff",
+    "accent_text": "#ffffff",  # v1.0 alias of on_accent
+    "accent_link": "#8aa4ff",  # accent used as small text/link (≥4.5:1 on bg)
+    "sel_bg": "rgba(46,92,255,.14)",  # v1.0 alias of accent_soft
     # — semantic —
     "info": "#58a6ff",
     "info_soft": "rgba(88,166,255,.13)",
@@ -171,7 +176,7 @@ _DARK = {
     "warn_soft": "rgba(240,180,41,.13)",
     "danger": "#ff6b6b",
     "danger_soft": "rgba(255,107,107,.13)",
-    "ok": "#35e0a1",
+    "ok": "#8aa4ff",  # success now speaks the brand hue, not green
     "error": "#ff6b6b",  # v1.0 alias of danger
     # — data visualisation: Okabe–Ito, brightened for a dark ground —
     "dv1": "#6ec1f0",
@@ -204,14 +209,14 @@ _LIGHT = {
     "text_tertiary": "#66727f",  # WCAG AA: 4.91:1 on white / 4.58:1 on panel
     "text_disabled": "#a7afb9",
     "accent": ACCENT_LIGHT,
-    "accent_hi": "#12b378",
-    "accent_lo": "#0b7d54",
-    "accent_soft": "rgba(14,156,104,.10)",
-    "accent_line": "rgba(14,156,104,.35)",
-    "on_accent": "#04160e",  # was #ffffff (3.52:1 on accent) → 5.3:1 on accent
-    "accent_text": "#04160e",
-    "accent_link": "#0b7d54",  # accent as small text/link: 5.15:1 on white
-    "sel_bg": "rgba(14,156,104,.10)",
+    "accent_hi": "#1440c2",
+    "accent_lo": "#002483",
+    "accent_soft": "rgba(0,47,167,.10)",
+    "accent_line": "rgba(0,47,167,.35)",
+    "on_accent": "#ffffff",  # 10.7:1 on Klein blue
+    "accent_text": "#ffffff",
+    "accent_link": "#002483",  # accent as small text/link: 13.5:1 on white
+    "sel_bg": "rgba(0,47,167,.10)",
     # semantic + data-viz colours sit one full step darker than the dark set
     "info": "#2b6fd4",
     "info_soft": "rgba(43,111,212,.10)",
@@ -219,7 +224,7 @@ _LIGHT = {
     "warn_soft": "rgba(154,103,0,.12)",
     "danger": "#d33b3b",
     "danger_soft": "rgba(211,59,59,.10)",
-    "ok": "#0e9c68",
+    "ok": "#002483",
     "error": "#d33b3b",
     "dv1": "#1c7fb8",
     "dv2": "#c07a00",
@@ -591,11 +596,9 @@ QMenu::separator {{
 }}
 /* --- welcome page (design §5.2) --- */
 QLabel#welcomeLogo {{
-    background: qlineargradient(
-        x1: 0, y1: 0, x2: 1, y2: 1,
-        stop: 0 {p['accent']}, stop: 1 {p['accent_lo']}
-    );
-    border-radius: 20px;
+    /* The mark is monochrome ink (text colour, recoloured per mode); no
+       tile, no gradient — black-and-white minimal by design. */
+    background: transparent;
 }}
 QLabel#welcomeTitle {{
     font-size: {FONT_SIZE_DISPLAY}px;
@@ -612,11 +615,13 @@ QPushButton#actionCard {{
     border-radius: {RADIUS_XL}px;
     padding: 0;
     text-align: left;
-    /* Restate the design floor: the global QPushButton min-height (28px)
-       otherwise overwrites the widget's setMinimumSize(196, 104) when the
-       stylesheet is applied.  The card still grows with its content via
-       height-for-width (UI review: button text must never truncate). */
-    min-width: 196px;
+    /* Width is a range, mirroring the widget-level constraint: a fixed
+       min-width here would make the three welcome cards rigid again, and
+       centred rigid items overlap when the window narrows.  The card still
+       grows with its content via height-for-width (UI review: button text
+       must never truncate). */
+    min-width: 108px;
+    max-width: 196px;
     min-height: 104px;
 }}
 QPushButton#actionCard:hover {{

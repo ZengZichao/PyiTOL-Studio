@@ -151,6 +151,7 @@ class WelcomePage(QWidget):
     new_project = Signal()
     open_project = Signal()
     browse_examples = Signal()
+    open_example_project = Signal()
     open_path = Signal(str)
 
     def __init__(self, parent=None) -> None:
@@ -198,6 +199,15 @@ class WelcomePage(QWidget):
             self._cards.append((card, icon_name, text_key, hint_key))
         layout.addLayout(cards)
 
+        # Sample project: a flat text affordance under the cards so a first
+        # launch has something real to look at without a dialog dance.
+        self.example_button = QPushButton(tr("welcome.open_example"))
+        self.example_button.setObjectName("linkButton")
+        self.example_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.example_button.clicked.connect(self.open_example_project.emit)
+        layout.addSpacing(SPACE_4)
+        layout.addWidget(self.example_button, 0, Qt.AlignmentFlag.AlignHCenter)
+
         layout.addSpacing(SPACE_7)
         self.recent_label = QLabel(tr("welcome.recent"))
         self.recent_label.setObjectName("caption")
@@ -229,15 +239,19 @@ class WelcomePage(QWidget):
         card.setObjectName("actionCard")
         # 196×104 was *fixed*, which clipped the description: the card holds a
         # 32px glyph + title row + a word-wrapped desc that needs two lines in
-        # Chinese (~114px total) and three in English (~129px).  Two things fix
-        # that: 196×104 becomes only the minimum (width stays pinned at the
-        # designed 196 so the row stays centred), and the size hints delegate
-        # to the embedded layout (LayoutSizeHintButton — the same fix the
-        # wizard's step buttons use) with height-for-width enabled, so the
-        # layout system sees the wrapped description's real height.  The
-        # shared QHBoxLayout keeps all three cards equally tall
-        # (UI review: button text must never truncate).
-        card.setFixedWidth(196)
+        # Chinese (~114px total) and three in English (~129px).  The size hints
+        # delegate to the embedded layout (LayoutSizeHintButton — the same fix
+        # the wizard's step buttons use) with height-for-width enabled, so the
+        # layout system sees the wrapped description's real height.  Width is a
+        # range, not a fixed value: a fixed width makes the three cards rigid,
+        # and a QHBoxLayout with a centred alignment cannot shrink rigid items
+        # below the available width — the cards then overlap each other on a
+        # narrow window (UI bug report: 小窗口下三个方块相互重叠).  196 stays
+        # the *maximum* (the row reads as designed at default width) while
+        # 108 is the floor at which the wrapped description still works; the
+        # shared QHBoxLayout keeps all three cards equally tall.
+        card.setMinimumWidth(108)
+        card.setMaximumWidth(196)
         card.setMinimumHeight(104)
         # Expanding alone is not enough: the layout system only asks a widget
         # for height-for-width when its size policy *has* that flag.  With it,
@@ -266,12 +280,14 @@ class WelcomePage(QWidget):
         row.setSpacing(SPACE_2)
         name = QLabel(tr(text_key))
         name.setObjectName("cardName")
-        row.addWidget(name)
+        # Wraps instead of clipping when a narrow window shrinks the card to
+        # its 108px floor (the ⌘-chip then sits beside the first line).
+        name.setWordWrap(True)
+        row.addWidget(name, 1)
         if hint_key:
             chip = QLabel(tr(hint_key))
             chip.setObjectName("kbd")
             row.addWidget(chip)
-        row.addStretch(1)
         inner.addLayout(row)
         inner.addSpacing(SPACE_1)
         desc = QLabel(tr(f"{text_key}_desc"))
@@ -292,24 +308,20 @@ class WelcomePage(QWidget):
         self._drop_glyph = glyph
         row.addWidget(glyph)
         row.addSpacing(SPACE_2)
-        self.drop_prefix = QLabel(tr("welcome.drop_prefix"))
-        self.drop_prefix.setObjectName("dropText")
-        self.drop_tree = QLabel(tr("welcome.drop_tree"))
-        self.drop_tree.setObjectName("dropEmph")
-        self.drop_mid = QLabel(tr("welcome.drop_or"))
-        self.drop_mid.setObjectName("dropText")
-        self.drop_template = QLabel(tr("welcome.drop_template"))
-        self.drop_template.setObjectName("dropEmph")
-        self.drop_suffix = QLabel(tr("welcome.drop_suffix"))
-        self.drop_suffix.setObjectName("dropText")
-        for widget in (
-            self.drop_prefix,
-            self.drop_tree,
-            self.drop_mid,
-            self.drop_template,
-            self.drop_suffix,
-        ):
-            row.addWidget(widget)
+        # One rich-text label (not five sibling labels): it re-wraps as the
+        # window narrows instead of clipping its tail off-screen.
+        self.drop_text = QLabel(
+            f"{tr('welcome.drop_prefix')} <b>{tr('welcome.drop_tree')}</b> "
+            f"{tr('welcome.drop_or')} <b>{tr('welcome.drop_template')}</b> "
+            f"{tr('welcome.drop_suffix')}"
+        )
+        self.drop_text.setObjectName("dropText")
+        self.drop_text.setWordWrap(True)
+        # A word-wrapping QLabel inside a centred layout gets a degenerate
+        # size hint (the wrapper would clip to its first words); pin the
+        # width the sentence actually needs and let it wrap below that.
+        self.drop_text.setMinimumWidth(320)
+        row.addWidget(self.drop_text, 1)
         return host
 
     # -- Qt ---------------------------------------------------------------
@@ -324,13 +336,14 @@ class WelcomePage(QWidget):
         self.title.setText(tr("app.title"))
         self.subtitle.setText(tr("app.subtitle"))
         self.recent_label.setText(tr("welcome.recent"))
-        self.drop_prefix.setText(tr("welcome.drop_prefix"))
-        self.drop_tree.setText(tr("welcome.drop_tree"))
-        self.drop_mid.setText(tr("welcome.drop_or"))
-        self.drop_template.setText(tr("welcome.drop_template"))
-        self.drop_suffix.setText(tr("welcome.drop_suffix"))
-        self.logo.setPixmap(icon_pixmap("folder-tree", 40, theme_color("on_accent")))
-        for card, _, text_key, _ in self._cards:
+        self.example_button.setText(tr("welcome.open_example"))
+        self.drop_text.setText(
+            f"{tr('welcome.drop_prefix')} <b>{tr('welcome.drop_tree')}</b> "
+            f"{tr('welcome.drop_or')} <b>{tr('welcome.drop_template')}</b> "
+            f"{tr('welcome.drop_suffix')}"
+        )
+        self.logo.setPixmap(icon_pixmap("app-logo", 44, theme_color("text")))
+        for card, icon_name, text_key, hint_key in self._cards:
             name_label = card.findChild(QLabel, "cardName")
             if name_label is not None:
                 name_label.setText(tr(text_key))
@@ -341,7 +354,7 @@ class WelcomePage(QWidget):
     def retheme_ui(self) -> None:
         """Re-rasterise the pixmaps that baked a theme colour (logo, card and
         dropzone glyphs) after a dark↔light switch; repaint the rest."""
-        self.logo.setPixmap(icon_pixmap("folder-tree", 40, theme_color("on_accent")))
+        self.logo.setPixmap(icon_pixmap("app-logo", 44, theme_color("text")))
         for glyph, icon_name in self._card_glyphs:
             glyph.setPixmap(icon_pixmap(icon_name, 16, theme_color("accent")))
         self._drop_glyph.setPixmap(

@@ -44,35 +44,67 @@ ICONSET_SIZES = [
 
 
 def find_converter() -> str:
-    """Return the first available SVG → PNG rasteriser."""
+    """Return the first available SVG → PNG rasteriser (PySide6 QSvgRenderer
+    covers machines without librsvg)."""
+    try:
+        import PySide6  # noqa: F401
+
+        return "pyside6"
+    except ImportError:
+        pass
     for tool in ("rsvg-convert",):
         if shutil.which(tool):
             return tool
     return ""
 
 
+def rasterise_with_pyside(svg: Path, size: int, output: Path) -> bool:
+    """QSvgRenderer fallback: render the 1024-grid SVG at *size* px square."""
+    try:
+        raw = svg.read_bytes()
+        if len(raw) > 262_144:
+            raise ValueError("SVG source larger than 256 KiB — refusing to parse")
+        # The SVG is a repo-controlled asset, but refuse DTDs anyway: the
+        # stdlib XML parser accepts internal entities (billion-laughs).
+        if b"<!DOCTYPE" in raw or b"<!ENTITY" in raw:
+            raise ValueError("SVG contains a DOCTYPE/ENTITY — refusing to parse")
+        from PySide6.QtCore import QByteArray, QRectF
+        from PySide6.QtGui import QImage, QPainter
+        from PySide6.QtSvg import QSvgRenderer
+
+        renderer = QSvgRenderer(QByteArray(raw))
+        if not renderer.isValid():
+            raise ValueError("QSvgRenderer reported an invalid document")
+        image = QImage(size, size, QImage.Format.Format_ARGB32)
+        image.fill(0)  # transparent ground — the tile paints itself
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        renderer.render(painter, QRectF(0, 0, size, size))
+        painter.end()
+        return image.save(str(output), "PNG")
+    except Exception as exc:  # noqa: BLE001
+        print(f"ERROR rasterising {output.name} at {size}px (PySide6): {exc}")
+        return False
+
+
 def rasterise_svg(svg: Path, size: int, output: Path, tool: str) -> bool:
     """Rasterise *svg* to *output* at *size*×*size* pixels."""
-    if tool == "rsvg-convert":
-        cmd = [
-            "rsvg-convert",
-            "-w", str(size),
-            "-h", str(size),
-            "-f", "png",
-            "-o", str(output),
-            str(svg),
-        ]
-    else:
-        # Fallback: use sips (macOS built-in) — it handles SVG on macOS 14+.
-        cmd = [
-            "sips",
-            "-s", "format", "png",
-            "-z", str(size), str(size),
-            str(svg),
-            "--out", str(output),
-        ]
+    if tool == "pyside6":
+        return rasterise_with_pyside(svg, size, output)
     try:
-        subprocess.run(cmd, check=True, capture_output=True)
+        if tool == "rsvg-convert":
+            subprocess.run(
+                ["rsvg-convert", "-w", str(size), "-h", str(size),
+                 "-f", "png", "-o", str(output), str(svg)],
+                check=True, capture_output=True, shell=False,
+            )
+        else:
+            # Fallback: use sips (macOS built-in) — it handles SVG on macOS 14+.
+            subprocess.run(
+                ["sips", "-s", "format", "png", "-z", str(size), str(size),
+                 str(svg), "--out", str(output)],
+                check=True, capture_output=True, shell=False,
+            )
         return True
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
         print(f"ERROR rasterising {output.name} at {size}px: {exc}")
@@ -114,6 +146,7 @@ def main() -> int:
             ["iconutil", "-c", "icns", str(ICONSET_DIR), "-o", str(ICNS_OUTPUT)],
             check=True,
             capture_output=True,
+            shell=False,
         )
     except subprocess.CalledProcessError as exc:
         print(f"ERROR building .icns: {exc.stderr.decode()}")

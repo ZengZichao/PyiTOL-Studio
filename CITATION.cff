@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use PyiTOL Studio, please also cite the PyiTOL engine it is built on."
 title: "PyiTOL Studio"
-version: 0.1.0
-date-released: "2026-09-15"
+version: 0.2.0
+date-released: "2026-10-26"
 authors:
   - family-names: "Zeng"
     given-names: "Zichao"
